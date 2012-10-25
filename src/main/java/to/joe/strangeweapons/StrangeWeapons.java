@@ -8,7 +8,7 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class StrangeWeapons extends JavaPlugin implements Listener {
@@ -47,9 +47,9 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void onDamage(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof Player && event.getEntity() instanceof Player && ((Player) event.getEntity()).getHealth() - event.getDamage() <= 0) {
-            Player p = (Player) event.getDamager();
+    public void onDeath(PlayerDeathEvent event) {
+        if (event.getEntity().getKiller() != null) {
+            Player p = event.getEntity().getKiller();
             NameableItem item = new NameableItem((CraftItemStack) p.getItemInHand());
             if (!p.getItemInHand().equals(Material.AIR) && item.isStrange()) {
                 int kills = item.getKills();
