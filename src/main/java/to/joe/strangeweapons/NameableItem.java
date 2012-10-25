@@ -69,6 +69,7 @@ public class NameableItem {
             st.data = lore[x];
             list.add(st);
         }
+        s.tag.getCompound("display").set("Lore", list);
     }
 
 }
