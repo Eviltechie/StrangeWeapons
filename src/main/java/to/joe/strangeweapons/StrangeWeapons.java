@@ -22,9 +22,8 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
         getCommand("strange").setExecutor(new StrangeCommand(this));
         getServer().getPluginManager().registerEvents(this, this);
 
-        for (String test : getConfig().getStringList("levels")) {
-            String[] split = test.split(",");
-            weaponText.put(Integer.parseInt(split[0]), split[1]);
+        for (String level : getConfig().getConfigurationSection("levels").getKeys(false)) {
+            weaponText.put(Integer.parseInt(level), getConfig().getString("levels." + level));
         }
     }
 
