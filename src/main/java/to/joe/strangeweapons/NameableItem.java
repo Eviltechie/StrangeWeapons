@@ -26,6 +26,10 @@ public class NameableItem {
         return s.tag.hasKey("Strange");
     }
     
+    public void makeStrange() {
+        s.tag.setBoolean("Strange", true);
+    }
+    
     public boolean hasName() {
         return s.tag.getCompound("display").hasKey("Name");
     }
@@ -34,8 +38,8 @@ public class NameableItem {
         s.tag.getCompound("display").setString("Name", name);
     }
     
-    public void getName() {
-        s.tag.getCompound("display").getString("Name");
+    public String getName() {
+        return s.tag.getCompound("display").getString("Name");
     }
     
     public boolean hasKills() {

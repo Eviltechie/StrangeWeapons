@@ -1,5 +1,14 @@
-name: strange-weapons
-version: 0.1
+name: StrangeWeapons
+version: '${project.version}'
 author: Eviltechie
 website: http://joe.to
 main: to.joe.strangeweapons.StrangeWeapons
+commands:
+  strange:
+    description: Turn an item into a strange item
+    permission: strangeweapons.strange
+    permission-message: You aren't Saxton Steve
+    usage: /<command>
+permissions:
+  strangeweapons.strange:
+    description: Turn an item into a strange item

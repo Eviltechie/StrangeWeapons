@@ -1,22 +1,22 @@
 levels:
 - 0,Strange
 - 10,Unremarkable
-- 25,Scarcely Lethal
-- 45,Mildly Menacing
-- 70,Somewhat Threatening
+- 15,Scarcely Lethal
+- 25,Mildly Menacing
+- 50,Somewhat Threatening
 - 100,Uncharitable
-- 135,Notably Dangerous
-- 175,Sufficiently Lethal
-- 225,Truly Feared
-- 275,Spectacularly Lethal
+- 150,Notably Dangerous
+- 200,Sufficiently Lethal
+- 250,Truly Feared
+- 300,Spectacularly Lethal
 - 350,Gore-Spattered
-- 500,Wicked Nasty
-- 750,Positively Inhumane
-- 999,Totally Ordinary
-- 1000,Face-Melting
-- 1500,Rage-Inducing
-- 2500,Server-Clearing
-- 5000,Epic
-- 7500,Legendary
-- 7616,Australian
-- 8500,Notch's Own
+- 100,Wicked Nasty
+- 150,Positively Inhumane
+- 199,Totally Ordinary
+- 200,Face-Melting
+- 250,Rage-Inducing
+- 300,Server-Clearing
+- 350,Epic
+- 400,Legendary
+- 450,Endian
+- 500,Notch's Own
