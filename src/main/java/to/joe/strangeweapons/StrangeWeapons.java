@@ -29,6 +29,14 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
         }
     }
 
+    String toTitleCase(String string) {
+        StringBuilder titleString = new StringBuilder();
+        for (String s : string.split(" ")) {
+            titleString.append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).append(" ");
+        }
+        return titleString.substring(0, titleString.length() - 1);
+    }
+
     String getWeaponName(int kills) {
         while (!weaponText.containsKey(kills)) {
             kills--;
@@ -48,7 +56,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                 kills++;
                 item.setKills(kills);
                 String oldName = item.getName();
-                item.setName(ChatColor.GOLD + getWeaponName(kills) + " " + p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " "));
+                item.setName(ChatColor.GOLD + getWeaponName(kills) + " " + toTitleCase(p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ")));
                 item.setLore(new String[] { ChatColor.WHITE + "Kills: " + kills });
                 if (!oldName.equals(item.getName())) {
                     getServer().broadcastMessage(ChatColor.GOLD + p.getName() + "'s " + oldName + " has reached a new rank: " + getWeaponName(kills));
