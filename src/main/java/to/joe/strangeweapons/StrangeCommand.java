@@ -33,6 +33,7 @@ public class StrangeCommand implements CommandExecutor {
                 item.setKills(0);
                 item.setName(ChatColor.GOLD + plugin.getWeaponName(0) + player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " "));
                 item.setLore(new String[] { ChatColor.WHITE + "Kills: 0" });
+                sender.sendMessage(ChatColor.AQUA + "You never noticed it before, but the weapon you're holding looks awfully strange.");
                 return true;
             }
         } else {
