@@ -3,7 +3,6 @@ package to.joe.strangeweapons;
 import java.util.HashMap;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -50,7 +49,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
     public void onDeath(PlayerDeathEvent event) {
         if (event.getEntity().getKiller() != null) {
             Player p = event.getEntity().getKiller();
-            if (p.getItemInHand() != null && !p.getItemInHand().equals(Material.AIR)) {
+            if (p.getItemInHand() != null) {
                 NameableItem item = new NameableItem((CraftItemStack) p.getItemInHand());
                 if (item.isStrange()) {
                     int kills = item.getKills();
