@@ -49,7 +49,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
     public void onDeath(PlayerDeathEvent event) {
         if (event.getEntity().getKiller() != null) {
             Player p = event.getEntity().getKiller();
-            if (p.getItemInHand() != null) {
+            if (p.getItemInHand().getAmount() > 0) {
                 NameableItem item = new NameableItem((CraftItemStack) p.getItemInHand());
                 if (item.isStrange()) {
                     int kills = item.getKills();
