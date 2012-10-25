@@ -13,20 +13,22 @@ public class NameableItem {
 
     public NameableItem(CraftItemStack itemStack) {
         s = itemStack.getHandle();
-        if (s.tag == null) {
-            s.tag = new NBTTagCompound();
-        }
-        if (!s.tag.hasKey("display")) {
-            s.tag.setCompound("display", new NBTTagCompound());
-        }
     }
 
     public boolean isStrange() {
+        if (s.tag == null)
+            return false;
         return s.tag.hasKey("Strange");
     }
 
     public void makeStrange() {
+        if (s.tag == null) {
+            s.tag = new NBTTagCompound();
+        }
         s.tag.setBoolean("Strange", true);
+        if (!s.tag.hasKey("display")) {
+            s.tag.setCompound("display", new NBTTagCompound());
+        }
     }
 
     public boolean hasName() {
