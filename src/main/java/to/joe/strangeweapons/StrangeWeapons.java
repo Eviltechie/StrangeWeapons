@@ -50,17 +50,20 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
     public void onDeath(PlayerDeathEvent event) {
         if (event.getEntity().getKiller() != null) {
             Player p = event.getEntity().getKiller();
-            NameableItem item = new NameableItem((CraftItemStack) p.getItemInHand());
-            if (p.getItemInHand() != null && !p.getItemInHand().equals(Material.AIR) && item.isStrange()) {
-                int kills = item.getKills();
-                kills++;
-                item.setKills(kills);
-                String oldName = item.getName();
-                item.setName(ChatColor.GOLD + getWeaponName(kills) + " " + toTitleCase(p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ")));
-                item.setLore(new String[] { ChatColor.WHITE + "Kills: " + kills });
-                if (!oldName.equals(item.getName())) {
-                    getServer().broadcastMessage(ChatColor.GOLD + p.getName() + "'s " + oldName + " has reached a new rank: " + getWeaponName(kills));
+            if (p.getItemInHand() != null && !p.getItemInHand().equals(Material.AIR)) {
+                NameableItem item = new NameableItem((CraftItemStack) p.getItemInHand());
+                if (item.isStrange()) {
+                    int kills = item.getKills();
+                    kills++;
+                    item.setKills(kills);
+                    String oldName = item.getName();
+                    item.setName(ChatColor.GOLD + getWeaponName(kills) + " " + toTitleCase(p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ")));
+                    item.setLore(new String[] { ChatColor.WHITE + "Kills: " + kills });
+                    if (!oldName.equals(item.getName())) {
+                        getServer().broadcastMessage(ChatColor.GOLD + p.getName() + "'s " + oldName + " has reached a new rank: " + getWeaponName(kills));
+                    }
                 }
+
             }
         }
     }
