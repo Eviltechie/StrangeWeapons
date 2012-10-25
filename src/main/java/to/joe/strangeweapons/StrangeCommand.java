@@ -9,9 +9,9 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 
 public class StrangeCommand implements CommandExecutor {
-    
+
     StrangeWeapons plugin;
-    
+
     public StrangeCommand(StrangeWeapons strange) {
         plugin = strange;
     }
@@ -24,7 +24,7 @@ public class StrangeCommand implements CommandExecutor {
         }
         Player player = (Player) sender;
         if (!player.getItemInHand().getType().equals(Material.AIR)) {
-            NameableItem item = new NameableItem((CraftItemStack)player.getItemInHand());
+            NameableItem item = new NameableItem((CraftItemStack) player.getItemInHand());
             if (item.isStrange()) {
                 sender.sendMessage(ChatColor.RED + "That item is already strange");
                 return true;
@@ -32,7 +32,7 @@ public class StrangeCommand implements CommandExecutor {
                 item.makeStrange();
                 item.setKills(0);
                 item.setName(ChatColor.GOLD + plugin.getWeaponName(0) + player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " "));
-                item.setLore(new String[]{ChatColor.WHITE + "Kills: 0"});
+                item.setLore(new String[] { ChatColor.WHITE + "Kills: 0" });
                 return true;
             }
         } else {
