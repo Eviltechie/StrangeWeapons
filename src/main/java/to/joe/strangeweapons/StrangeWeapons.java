@@ -48,7 +48,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                 kills++;
                 item.setKills(kills);
                 String oldName = item.getName();
-                item.setName(ChatColor.GOLD + getWeaponName(kills) + p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " "));
+                item.setName(ChatColor.GOLD + getWeaponName(kills) + " " + p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " "));
                 item.setLore(new String[] { ChatColor.WHITE + "Kills: " + kills });
                 if (!oldName.equals(item.getName())) {
                     getServer().broadcastMessage(ChatColor.GOLD + p.getName() + "'s " + oldName + " has reached a new rank: " + getWeaponName(kills));
