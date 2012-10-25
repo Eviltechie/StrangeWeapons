@@ -1,22 +1,22 @@
 levels:
-- 0,Strange
-- 10,Unremarkable
-- 15,Scarcely Lethal
-- 25,Mildly Menacing
-- 50,Somewhat Threatening
-- 100,Uncharitable
-- 150,Notably Dangerous
-- 200,Sufficiently Lethal
-- 250,Truly Feared
-- 300,Spectacularly Lethal
-- 350,Gore-Spattered
-- 100,Wicked Nasty
-- 150,Positively Inhumane
-- 199,Totally Ordinary
-- 200,Face-Melting
-- 250,Rage-Inducing
-- 300,Server-Clearing
-- 350,Epic
-- 400,Legendary
-- 450,Endian
-- 500,Notch's Own
+  0: Strange
+  5: Unremarkable
+  10: Scarcely Lethal
+  15: Mildly Menacing
+  25: Somewhat Threatening
+  50: Uncharitable
+  75: Notably Dangerous
+  100: Sufficiently Lethal
+  125: Truly Feared
+  150: Spectacularly Lethal
+  175: Gore Spattered
+  200: Wicked Nasty
+  225: Positively Inhumane
+  249: Totally Ordinary
+  250: Face Melting
+  275: Rage Inducing
+  300: Server Clearing
+  350: Epic
+  400: Legendary
+  450: Endian
+  500: Notch's Own
