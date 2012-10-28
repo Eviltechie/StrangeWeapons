@@ -54,6 +54,10 @@ public class NameableItem {
     public void setKills(int kills) {
         s.tag.setInt("PlayerKills", kills);
     }
+    
+    public boolean hasDisplayCompound() {
+        return (s.tag.hasKey("display") && !s.tag.getCompound("display").equals(new NBTTagCompound())); // has display key and the compound isn't empty
+    }
 
     public String[] getLore() {
         NBTTagList rawLore = s.tag.getCompound("display").getList("Lore");
