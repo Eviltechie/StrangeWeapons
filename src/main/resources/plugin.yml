@@ -9,6 +9,24 @@ commands:
     permission: strangeweapons.strange
     permission-message: You aren't Saxton Steve
     usage: /<command>
+  newcrate:
+    description: Make a new crate
+    usage: /newcrate
+  newkey:
+    description: Make a new key
+    usage: /newkey
+  newpart:
+    description: Make a new part
+    usage: /newpart
+  newnametag:
+    description: Make a new name tag
+    usage: /newnametag
+  newdescriptiontag:
+    description: Make a new description tag
+    usage: /newdescriptiontag
+  tag:
+    description: Set the tag for dagging, yo dawg
+    usage: /tag
 permissions:
   strangeweapons.strange:
     description: Turn an item into a strange item

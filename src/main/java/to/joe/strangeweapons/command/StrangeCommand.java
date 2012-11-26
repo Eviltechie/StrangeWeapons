@@ -1,4 +1,4 @@
-package to.joe.strangeweapons;
+package to.joe.strangeweapons.command;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -7,6 +7,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
+
+import to.joe.strangeweapons.NameableItem;
+import to.joe.strangeweapons.StrangeWeapons;
 
 public class StrangeCommand implements CommandExecutor {
 
@@ -31,7 +34,7 @@ public class StrangeCommand implements CommandExecutor {
             } else {
                 item.makeStrange();
                 item.setKills(0);
-                item.setName(ChatColor.GOLD + plugin.getWeaponName(0) + " " + plugin.toTitleCase(player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ")));
+                item.setName(ChatColor.GOLD + plugin.getWeaponName(0) + " " + StrangeWeapons.toTitleCase(player.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ")));
                 item.setLore(new String[] { ChatColor.WHITE + "Kills: 0" });
                 sender.sendMessage(ChatColor.AQUA + "You never noticed it before, but the weapon you're holding looks awfully strange.");
                 return true;
