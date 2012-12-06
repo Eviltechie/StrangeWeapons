@@ -3,7 +3,7 @@ package to.joe.strangeweapons;
 import java.util.HashMap;
 
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
