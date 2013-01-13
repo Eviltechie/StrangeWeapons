@@ -20,3 +20,24 @@ levels:
   400: Legendary
   450: Endian
   500: Notch's Own
+idstrings:
+  - 'Strange Weapon #{#}'
+  - 'Level: {#}'
+datastorage: mysql
+taglengthlimit: 50
+maxparts: 3
+drops:
+  itemDropLimit: 9
+  itemDropReset: 10080
+  itemDropRollMaxTime: 70
+  itemDropRollMinTime: 30
+  crateDropLimit: 3
+  crateDropReset: 10080
+  crateDropRollMaxTime: 70
+  crateDropRollMinTime: 30
+database:
+  url: jdbc:mysql://localhost:3306/database
+  username: minecraft
+  password: lolololol
+crates:
+drops:

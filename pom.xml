@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>to.joe</groupId>
     <artifactId>StrangeWeapons</artifactId>
-    <version>0.2.2</version>
+    <version>0.5.0</version>
     <name>StrangeWeapons</name>
     <url>http://joe.to</url>
     <description>Strange weapons</description>
@@ -22,8 +22,8 @@
      <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
-            <artifactId>craftbukkit</artifactId>
-            <version>1.4.5-R0.3-SNAPSHOT</version>
+            <artifactId>bukkit</artifactId>
+            <version>1.4.6-R0.1</version>
         </dependency>
     </dependencies>
     
@@ -38,6 +38,10 @@
                 <includes>
                     <include>plugin.yml</include>
                     <include>config.yml</include>
+                    <include>parts.sql</include>
+                    <include>weapons.sql</include>
+                    <include>droprecords.sql</include>
+                    <include>dropdata.sql</include>
                 </includes>
             </resource>
         </resources>
