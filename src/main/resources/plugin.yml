@@ -44,6 +44,7 @@ commands:
     permission: strangeweapons.command.crates
     permission-message: You may not manage crates
     usage: /crates
+    aliases: crate
   contents:
     description: View the contents of the crate you are holding
     permission: strangeweapons.command.contents
@@ -54,6 +55,7 @@ commands:
     permission: strangeweapons.command.drops
     permission-message: You may not manage drops
     usage: /drops
+    aliases: drop
   playtime:
     description: See how long a player has played on the server
     permission: strangeweapons.command.playtime

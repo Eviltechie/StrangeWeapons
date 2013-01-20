@@ -1,5 +1,6 @@
 package to.joe.strangeweapons;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,6 +51,7 @@ import to.joe.strangeweapons.datastorage.DataStorageException;
 import to.joe.strangeweapons.datastorage.DataStorageInterface;
 import to.joe.strangeweapons.datastorage.MySQLDataStorage;
 import to.joe.strangeweapons.datastorage.PlayerDropData;
+import to.joe.strangeweapons.datastorage.YamlDataStorage;
 import to.joe.strangeweapons.meta.Crate;
 import to.joe.strangeweapons.meta.StrangePart;
 import to.joe.strangeweapons.meta.StrangeWeapon;
@@ -108,14 +110,29 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
         }
 
         try {
-            if (getConfig().getString("datastorage").equalsIgnoreCase("mysql")) {
+            String storageType = getConfig().getString("datastorage");
+            if (storageType.equalsIgnoreCase("mysql")) {
                 dataStorage = new Cache(this, new MySQLDataStorage(this, getConfig().getString("database.url"), getConfig().getString("database.username"), getConfig().getString("database.password")));
-            } else if (getConfig().getString("datastorage").equalsIgnoreCase("mysql_nocache")) {
+                getLogger().info("Using cached mySQL for datastorage");
+            } else if (storageType.equalsIgnoreCase("mysql_nocache")) {
                 dataStorage = new MySQLDataStorage(this, getConfig().getString("database.url"), getConfig().getString("database.username"), getConfig().getString("database.password"));
-                getLogger().warning("You are using mysql without caching. Expect poor performance!");
+                getLogger().warning("Using uncached mySQL for datastorage. Expect poor performance!");
+            } else if (storageType.equalsIgnoreCase("yaml")) {
+                dataStorage = new YamlDataStorage(this);
+                getLogger().info("Using yaml for datastorage");
+            } else {
+                getLogger().severe("No datastorage selected!");
+                getServer().getPluginManager().disablePlugin(this);
+                return;
             }
         } catch (SQLException e) {
             getLogger().log(Level.SEVERE, "Error connecting to database", e);
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        } catch (IOException e) {
+            getLogger().log(Level.SEVERE, "Error loading yaml file", e);
+            getServer().getPluginManager().disablePlugin(this);
+            return;
         }
 
         itemDropLimit = getConfig().getInt("drops.itemDropLimit", 9);

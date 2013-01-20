@@ -25,14 +25,14 @@ public class PlayerDropData implements Cloneable {
     public PlayerDropData(String player, int playTime, int nextItemDrop, int nextCrateDrop) {
         this.player = player;
         this.playTime = playTime;
-        if (nextItemDrop == 0) {
-            nextItemDrop = rollItem();
-        }
         this.nextItemDrop = nextItemDrop;
-        if (nextCrateDrop == 0) {
-            nextCrateDrop = rollCrate();
-        }
         this.nextCrateDrop = nextCrateDrop;
+        if (nextItemDrop == 0) {
+            rollItem();
+        }
+        if (nextCrateDrop == 0) {
+            rollCrate();
+        }
     }
 
     public String getPlayer() {

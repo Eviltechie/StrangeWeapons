@@ -9,8 +9,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import to.joe.strangeweapons.StrangeWeapons;
+import to.joe.strangeweapons.meta.StrangeWeapon;
 
 public class CratesCommand implements CommandExecutor {
 
@@ -114,10 +116,14 @@ public class CratesCommand implements CommandExecutor {
                         }
                     }
                     maxItem++;
-                    plugin.getConfig().set("crates." + series + ".contents." + maxItem + ".item", ((Player) sender).getItemInHand());
+                    ItemStack item = ((Player)sender).getItemInHand().clone();
+                    if (StrangeWeapon.isStrangeWeapon(item)) {
+                        item = new StrangeWeapon(item).clone();
+                    }
+                    plugin.getConfig().set("crates." + series + ".contents." + maxItem + ".item", item);
                     plugin.getConfig().set("crates." + series + ".contents." + maxItem + ".weight", weight);
                     plugin.getConfig().set("crates." + series + ".contents." + maxItem + ".hidden", false);
-                    sender.sendMessage(ChatColor.GOLD + "Added " + ChatColor.AQUA + ChatColor.stripColor(((Player) sender).getItemInHand().serialize().toString()) + ChatColor.GOLD + " with weight " + ChatColor.AQUA + weight + ChatColor.GOLD + " to series " + ChatColor.AQUA + series);
+                    sender.sendMessage(ChatColor.GOLD + "Added " + ChatColor.AQUA + ChatColor.stripColor(item.serialize().toString()) + ChatColor.GOLD + " with weight " + ChatColor.AQUA + weight + ChatColor.GOLD + " to series " + ChatColor.AQUA + series);
                     plugin.saveConfig();
                 } else {
                     sender.sendMessage(ChatColor.RED + "Crate does not exist");
