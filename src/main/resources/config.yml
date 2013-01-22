@@ -23,7 +23,7 @@ levels:
 idstrings:
   - 'Strange Weapon #{#}'
   - 'Level: {#}'
-datastorage: mysql
+datastorage: yaml
 taglengthlimit: 50
 maxparts: 3
 drops:
