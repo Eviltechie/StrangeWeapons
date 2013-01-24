@@ -265,6 +265,9 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
         if (dataStorage instanceof Cache) {
             ((Cache) dataStorage).shutdown();
         }
+        if (dataStorage instanceof YamlDataStorage) {
+            ((YamlDataStorage) dataStorage).shutdown();
+        }
     }
 
     public static String toTitleCase(String string) {
@@ -444,7 +447,6 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                     if (numStrangeWeapons == 1 && numStrangeParts == 1 && numTotalItems == 2) {
                         StrangeWeapon weapon = new StrangeWeapon(strangeWeapon.clone());
                         StrangePart part = new StrangePart(strangePart);
-                        weapon.getParts().put(part.getPart(), 0);
                         if (weapon.getParts().size() > maxParts) {
                             craftingInventory.setResult(null);
                             player.sendMessage(ChatColor.RED + "You may only have " + maxParts + " strange parts on a weapon");
@@ -452,6 +454,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                             craftingInventory.setResult(null);
                             player.sendMessage(ChatColor.RED + "This weapon is already tracking " + part.getPart().getName());
                         } else {
+                            weapon.getParts().put(part.getPart(), 0);
                             craftingInventory.setResult(weapon.previewItemStack());
                         }
                         player.updateInventory();

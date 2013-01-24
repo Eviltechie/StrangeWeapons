@@ -74,6 +74,15 @@ public class YamlDataStorage implements DataStorageInterface {
             }
         }, 1200, 1200);
     }
+    
+    public void shutdown() {
+        try {
+            weaponConfig.save(weaponConfigFile);
+            dropsConfig.save(dropsConfigFile);
+        } catch (IOException e) {
+            plugin.getServer().getLogger().log(Level.SEVERE, "Error writing file on shutdown!", e);
+        }
+    }
 
     @Override
     public WeaponData getWeaponData(int id) throws DataStorageException {
