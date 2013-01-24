@@ -19,14 +19,18 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
+import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.CraftingInventory;
@@ -65,6 +69,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
     private DataStorageInterface dataStorage;
     public int tagLengthLimit;
     private int maxParts;
+    private boolean durability;
 
     public int itemDropLimit;
     public int itemDropReset;
@@ -144,6 +149,8 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
         crateDropReset = getConfig().getInt("drops.crateDropReset", 10080);
         crateDropRollMaxTime = getConfig().getInt("drops.crateDropRollMaxTime", 70);
         crateDropRollMinTime = getConfig().getInt("drops.crateDropRollMinTime", 30);
+
+        durability = getConfig().getBoolean("durability", true);
 
         Crate.plugin = this;
         StrangeWeapon.plugin = this;
@@ -331,11 +338,16 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {
             Player p = (Player) event.getDamager();
             if (p.getItemInHand().getAmount() > 0 && StrangeWeapon.isStrangeWeapon(p.getItemInHand())) {
+                if (!durability) {
+                    p.getItemInHand().setDurability((short) 0);
+                    p.updateInventory();
+                }
                 StrangeWeapon item = new StrangeWeapon(p.getItemInHand());
                 Entry<Part, Integer> oldPrimary = item.getPrimary();
                 String oldName = getWeaponName(p.getItemInHand(), (int) (oldPrimary.getValue() * oldPrimary.getKey().getMultiplier()));
@@ -350,10 +362,15 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player p = event.getPlayer();
         if (p.getItemInHand().getAmount() > 0 && StrangeWeapon.isStrangeWeapon(p.getItemInHand())) {
+            if (!durability && p.getItemInHand().getType() != Material.BOW) {
+                p.getItemInHand().setDurability((short) 0);
+                p.updateInventory();
+            }
             StrangeWeapon item = new StrangeWeapon(p.getItemInHand());
             Entry<Part, Integer> oldPrimary = item.getPrimary();
             String oldName = getWeaponName(p.getItemInHand(), (int) (oldPrimary.getValue() * oldPrimary.getKey().getMultiplier()));
@@ -364,6 +381,37 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                 getServer().broadcastMessage(p.getDisplayName() + "'s " + toTitleCase(p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ")) + ChatColor.WHITE + " has reached a new rank: " + getWeaponName((int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier())));
             }
             p.setItemInHand(item.getItemStack());
+        }
+    }
+    
+    @SuppressWarnings("deprecation")
+    @EventHandler
+    public void onBowFire(EntityShootBowEvent event) {
+        if (!durability && event.getEntity() instanceof Player && StrangeWeapon.isStrangeWeapon(event.getBow())) {
+            event.getBow().setDurability((short) 0);
+            ((Player) event.getEntity()).updateInventory();
+        }
+    }
+    
+    @SuppressWarnings("deprecation")
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event) {
+        if (event.getItem() == null) {
+            return;
+        }
+        Material mat = event.getItem().getType();
+        if (!durability && event.getAction() == Action.RIGHT_CLICK_BLOCK && (mat.equals(Material.WOOD_HOE) || mat.equals(Material.STONE_HOE) || mat.equals(Material.IRON_HOE) || mat.equals(Material.GOLD_HOE) || mat.equals(Material.DIAMOND_HOE)) && StrangeWeapon.isStrangeWeapon(event.getItem())) {
+            event.getItem().setDurability((short) 0);
+            event.getPlayer().updateInventory();
+        }
+    }
+    
+    @SuppressWarnings("deprecation")
+    @EventHandler
+    public void onFish(PlayerFishEvent event) {
+        if (!durability && event.getPlayer().getItemInHand().getType().equals(Material.FISHING_ROD) && StrangeWeapon.isStrangeWeapon(event.getPlayer().getItemInHand())) {
+            event.getPlayer().getItemInHand().setDurability((short) 0);
+            event.getPlayer().updateInventory();
         }
     }
 
@@ -612,7 +660,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
         if (Crate.isCrate(event.getItemInHand())) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "You may not place Steve Co. Supply Crates");
-        } else if (StrangeWeapon.isStrangeWeapon(event.getItemInHand())) {
+        } else if (event.getItemInHand().getType().isBlock() && StrangeWeapon.isStrangeWeapon(event.getItemInHand())) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "You may not place strange weapons");
         }

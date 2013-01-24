@@ -26,6 +26,7 @@ idstrings:
 datastorage: yaml
 taglengthlimit: 50
 maxparts: 3
+durability: true
 drops:
   itemDropLimit: 9
   itemDropReset: 10080
