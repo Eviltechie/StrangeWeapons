@@ -26,6 +26,9 @@ public class Crate {
             return false;
         }
         ItemMeta meta = item.getItemMeta();
+        if (!(meta.hasDisplayName() && meta.hasLore())) {
+            return false;
+        }
         if (!meta.getDisplayName().equals(ChatColor.YELLOW + "Steve Co. Supply Crate")) {
             return false;
         }

@@ -28,7 +28,7 @@ public class MetaParser {
 
     public static boolean isKey(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
-        if (item.getType().equals(Material.BLAZE_ROD) && meta.getDisplayName().equals(keyName) && meta.getLore().equals(keyLore)) {
+        if (item.getType().equals(Material.BLAZE_ROD) && meta.hasDisplayName() && meta.hasLore() && meta.getDisplayName().equals(keyName) && meta.getLore().equals(keyLore)) {
             return true;
         }
         return false;
@@ -45,7 +45,7 @@ public class MetaParser {
 
     public static boolean isNameTag(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
-        if (item.getType().equals(Material.PAPER) && meta.getDisplayName().equals(nameTagName) && meta.getLore().equals(nameTagLore)) {
+        if (item.getType().equals(Material.PAPER) && meta.hasDisplayName() && meta.hasLore() && meta.getDisplayName().equals(nameTagName) && meta.getLore().equals(nameTagLore)) {
             return true;
         }
         return false;
@@ -62,7 +62,7 @@ public class MetaParser {
 
     public static boolean isDescriptionTag(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
-        if (item.getType().equals(Material.PAPER) && meta.getDisplayName().equals(descriptionTagName) && meta.getLore().equals(descriptionTagLore)) {
+        if (item.getType().equals(Material.PAPER) && meta.hasDisplayName() && meta.hasLore() && meta.getDisplayName().equals(descriptionTagName) && meta.getLore().equals(descriptionTagLore)) {
             return true;
         }
         return false;
