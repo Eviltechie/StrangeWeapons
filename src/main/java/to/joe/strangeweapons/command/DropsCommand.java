@@ -60,7 +60,7 @@ public class DropsCommand implements CommandExecutor {
                     }
                 }
                 maxItem++;
-                ItemStack item = ((Player)sender).getItemInHand().clone();
+                ItemStack item = ((Player) sender).getItemInHand().clone();
                 if (StrangeWeapon.isStrangeWeapon(item)) {
                     item = new StrangeWeapon(item).clone();
                 }

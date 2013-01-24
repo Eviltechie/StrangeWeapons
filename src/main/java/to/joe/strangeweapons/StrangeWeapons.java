@@ -383,7 +383,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
             p.setItemInHand(item.getItemStack());
         }
     }
-    
+
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onBowFire(EntityShootBowEvent event) {
@@ -392,7 +392,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
             ((Player) event.getEntity()).updateInventory();
         }
     }
-    
+
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
@@ -405,7 +405,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
             event.getPlayer().updateInventory();
         }
     }
-    
+
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onFish(PlayerFishEvent event) {

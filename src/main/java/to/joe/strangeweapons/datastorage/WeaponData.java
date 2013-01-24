@@ -82,7 +82,7 @@ public class WeaponData implements Cloneable {
         data.setWeaponId(weaponId);
         return data;
     }
-    
+
     public static WeaponData fromConfigurationSection(int id, ConfigurationSection section) {
         WeaponData data = new WeaponData();
         data.weaponId = id;

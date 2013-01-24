@@ -61,7 +61,7 @@ public class YamlDataStorage implements DataStorageInterface {
         if (!dropsConfig.isConfigurationSection("players")) {
             dropsConfig.createSection("players");
         }
-        
+
         plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
             @Override
             public void run() {
@@ -74,7 +74,7 @@ public class YamlDataStorage implements DataStorageInterface {
             }
         }, 1200, 1200);
     }
-    
+
     public void shutdown() {
         try {
             weaponConfig.save(weaponConfigFile);
