@@ -140,15 +140,15 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
             return;
         }
 
-        itemDropLimit = getConfig().getInt("drops.itemDropLimit", 9);
-        itemDropReset = getConfig().getInt("drops.itemDropReset", 10080);
-        itemDropRollMaxTime = getConfig().getInt("drops.itemDropRollMaxTime", 70);
-        itemDropRollMinTime = getConfig().getInt("drops.itemDropRollMinTime", 30);
+        itemDropLimit = getConfig().getInt("itemDropLimit", 9);
+        itemDropReset = getConfig().getInt("itemDropReset", 10080);
+        itemDropRollMaxTime = getConfig().getInt("itemDropRollMaxTime", 70);
+        itemDropRollMinTime = getConfig().getInt("itemDropRollMinTime", 30);
 
-        crateDropLimit = getConfig().getInt("drops.crateDropLimit", 3);
-        crateDropReset = getConfig().getInt("drops.crateDropReset", 10080);
-        crateDropRollMaxTime = getConfig().getInt("drops.crateDropRollMaxTime", 70);
-        crateDropRollMinTime = getConfig().getInt("drops.crateDropRollMinTime", 30);
+        crateDropLimit = getConfig().getInt("crateDropLimit", 3);
+        crateDropReset = getConfig().getInt("crateDropReset", 10080);
+        crateDropRollMaxTime = getConfig().getInt("crateDropRollMaxTime", 70);
+        crateDropRollMinTime = getConfig().getInt("crateDropRollMinTime", 30);
 
         durability = getConfig().getBoolean("durability", true);
 
