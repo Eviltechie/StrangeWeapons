@@ -26,12 +26,19 @@ public class StrangeCommand implements CommandExecutor {
         ItemStack item = player.getItemInHand();
         Part chosenPart = Part.PLAYER_KILLS;
         if (args.length == 1) {
-            try {
-                chosenPart = Part.valueOf(args[0].toUpperCase());
-            } catch (IllegalArgumentException e) {
-                sender.sendMessage(ChatColor.RED + "Invalid part");
-                return true;
+            if(player.hasPermission("strangeweapons.command.strange.part")){
+                    try {
+                        chosenPart = Part.valueOf(args[0].toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                    sender.sendMessage(ChatColor.RED + "Invalid part");
+                    return true;
+                    }
             }
+            else
+            {
+                sender.sendMessage(ChatColor.RED + "You Don't have permission to change the default strange part added to your item.");
+            }
+            
         }
         if (!item.getType().equals(Material.AIR)) {
             if (StrangeWeapon.isStrangeWeapon(item)) {

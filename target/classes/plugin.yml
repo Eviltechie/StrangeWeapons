@@ -1,0 +1,122 @@
+name: StrangeWeapons
+version: '0.5.3'
+author: Eviltechie
+website: http://joe.to
+main: to.joe.strangeweapons.StrangeWeapons
+commands:
+  strange:
+    description: Turn an item into a strange item
+    permission: strangeweapons.command.strange
+    permission-message: You may not make strange weapons
+    usage: /strange <part>
+  newcrate:
+    description: Spawn a Steve Co. Supply Crate
+    permission: strangeweapons.command.newcrate
+    permission-message: You may not spawn crates
+    usage: /newcrate [series] <quantity>
+  newkey:
+    description: Spawn a Steve Co. Key
+    permission: strangeweapons.command.newkey
+    permission-message: You may not spawn keys
+    usage: /newkey <quantity>
+  newpart:
+    description: Spawn a strange part
+    permission: strangeweapons.command.newpart
+    permission-message: You may not spawn strange parts
+    usage: /newpart [part] <quantity>
+  newnametag:
+    description: Spawn a name tag
+    permission: strangeweapons.command.newnametag
+    permission-message: You may not spawn name tags
+    usage: /newnametag <quantity>
+  newdescriptiontag:
+    description: Spawn a description tag
+    permission: strangeweapons.command.newdescriptiontag
+    permission-message: You may not spawn description tags
+    usage: /newdescriptiontag <quantity>
+  tag:
+    description: Set a string to use with name or description tags
+    permission: strangeweapons.command.tag
+    permission-message: You may not set tags
+    usage: /tag [message]
+  crates:
+    description: Crate management
+    permission: strangeweapons.command.crates
+    permission-message: You may not manage crates
+    usage: /crates
+    aliases: crate
+  contents:
+    description: View the contents of the crate you are holding
+    permission: strangeweapons.command.contents
+    permission-message: You may not view crate contents
+    usage: /contents
+  drops:
+    description: Drop management
+    permission: strangeweapons.command.drops
+    permission-message: You may not manage drops
+    usage: /drops
+    aliases: drop
+  playtime:
+    description: See how long a player has played on the server
+    permission: strangeweapons.command.playtime
+    permission-message: You may not view playtimes
+    usage: /playtime [name]
+  listparts:
+    description: Shows the available strange parts
+    permission: strangeweapons.command.listparts
+    permission-message: You may not list strange parts
+    usage: /listparts
+permissions:
+  strangeweapons.command.strange:
+    description: Turn an item into a strange item
+  strangeweapons.command.strange.part:
+    description: Turn an item into a strange item with a defined part
+  strangeweapons.command.newcrate:
+    description:: Spawn crates
+  strangeweapons.command.newkey:
+    description: Spawn keys
+  strangeweapons.command.newpart:
+    description: Spawn strange parts
+  strangeweapons.command.newnametag:
+    description: Spawn name tags
+  strangeweapons.command.newdescriptiontag:
+    description: Spawn description tags
+  strangeweapons.command.tag:
+    description: Set tags
+    default: true
+  strangeweapons.command.crates:
+    description: Manage crates
+  strangeweapons.command.contents:
+    description: View crate contents
+  strangeweapons.command.drops:
+    description: Manage drops
+  strangeweapons.command.playtime:
+    description: View playtime
+  strangeweapons.command.listparts:
+    description: List strange parts
+  strangeweapons.drop.announceexempt:
+    description: Does not announce publicly when this player gets a drop, in case they may be vanished
+  strangeweapons.drop.dropcrates:
+    description: Drop crates for this player
+    default: true
+  strangeweapons.drop.dropitems:
+    description: Drop items for this player
+    default: true
+  strangeweapons.*:
+    description: Gives all of the strange weapons permissions
+    children:
+      strangeweapons.command.strange: true
+      strangeweapons.command.newcrate: true
+      strangeweapons.command.newkey: true
+      strangeweapons.command.newpart: true
+      strangeweapons.command.newnametag: true
+      strangeweapons.command.newdescriptiontag: true
+      strangeweapons.command.tag: true
+      strangeweapons.command.crates: true
+      strangeweapons.command.contents: true
+      strangeweapons.command.drops: true
+      strangeweapons.command.playtime: true
+      strangeweapons.command.listparts: true
+      strangeweapons.drop.announceexempt: true
+      strangeweapons.drop.dropcrates: true
+      strangeweapons.drop.dropitems: true
