@@ -34,6 +34,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.FurnaceInventory;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -785,126 +787,135 @@ public class StrangeWeapons extends JavaPlugin implements Listener
         else
             if (event.getSlotType() == SlotType.RESULT)
             {
-                CraftingInventory craftingInventory = (CraftingInventory) event.getInventory();
-                ItemStack[] matrix = craftingInventory.getMatrix();
-                ItemStack strangeWeapon = null;
-                int numStrangeWeapons = 0;
-                ItemStack crate = null;
-                int numCrates = 0;
-                ItemStack key = null;
-                int numKeys = 0;
-                ItemStack strangePart = null;
-                int numStrangeParts = 0;
-                ItemStack nameTag = null;
-                int numNameTags = 0;
-                ItemStack descriptionTag = null;
-                int numDescriptionTags = 0;
-                ItemStack normalItem = null;
-                int numNormalItems = 0;
-                int numTotalItems = 0;
-                for (ItemStack i : matrix)
+                if (event.getInventory() instanceof FurnaceInventory)
                 {
-                    if (i == null || i.getTypeId() == 0)
+                    player.sendMessage(ChatColor.RED + "The Hell you doing man! Dont Burn that!");
+                    return;
+                }
+                else
+                {
+
+                    CraftingInventory craftingInventory = (CraftingInventory) event.getInventory();
+                    ItemStack[] matrix = craftingInventory.getMatrix();
+                    ItemStack strangeWeapon = null;
+                    int numStrangeWeapons = 0;
+                    ItemStack crate = null;
+                    int numCrates = 0;
+                    ItemStack key = null;
+                    int numKeys = 0;
+                    ItemStack strangePart = null;
+                    int numStrangeParts = 0;
+                    ItemStack nameTag = null;
+                    int numNameTags = 0;
+                    ItemStack descriptionTag = null;
+                    int numDescriptionTags = 0;
+                    ItemStack normalItem = null;
+                    int numNormalItems = 0;
+                    int numTotalItems = 0;
+                    for (ItemStack i : matrix)
                     {
-                        continue;
-                    }
-                    if (StrangeWeapon.isStrangeWeapon(i))
-                    {
-                        numStrangeWeapons++;
-                        strangeWeapon = i;
-                    }
-                    else
-                        if (Crate.isCrate(i))
+                        if (i == null || i.getTypeId() == 0)
                         {
-                            numCrates++;
-                            crate = i;
+                            continue;
+                        }
+                        if (StrangeWeapon.isStrangeWeapon(i))
+                        {
+                            numStrangeWeapons++;
+                            strangeWeapon = i;
                         }
                         else
-                            if (MetaParser.isKey(i))
+                            if (Crate.isCrate(i))
                             {
-                                numKeys++;
-                                key = i;
+                                numCrates++;
+                                crate = i;
                             }
                             else
-                                if (StrangePart.isPart(i))
+                                if (MetaParser.isKey(i))
                                 {
-                                    numStrangeParts++;
-                                    strangePart = i;
+                                    numKeys++;
+                                    key = i;
                                 }
                                 else
-                                    if (MetaParser.isNameTag(i))
+                                    if (StrangePart.isPart(i))
                                     {
-                                        numNameTags++;
-                                        nameTag = i;
+                                        numStrangeParts++;
+                                        strangePart = i;
                                     }
                                     else
-                                        if (MetaParser.isDescriptionTag(i))
+                                        if (MetaParser.isNameTag(i))
                                         {
-                                            numDescriptionTags++;
-                                            descriptionTag = i;
+                                            numNameTags++;
+                                            nameTag = i;
                                         }
                                         else
-                                        {
-                                            numNormalItems++;
-                                            normalItem = i;
-                                        }
-                    numTotalItems++;
-                }
-                if (numCrates == 1 && numKeys == 1 && numTotalItems == 2)
-                {
-                    ItemStack loot = new Crate(crate).getUncratedItem();
-                    if (StrangeWeapon.isStrangeWeapon(loot))
-                    {
-                        loot = new StrangeWeapon(loot).clone();
+                                            if (MetaParser.isDescriptionTag(i))
+                                            {
+                                                numDescriptionTags++;
+                                                descriptionTag = i;
+                                            }
+                                            else
+                                            {
+                                                numNormalItems++;
+                                                normalItem = i;
+                                            }
+                        numTotalItems++;
                     }
-                    /*
-                     * if (loot == null) { getLogger().severe(
-                     * "LOOT IS NULL - Report this to the plugin author!");
-                     * getLogger().severe("Player " + player.getName() +
-                     * " tried to uncrate a crate!" +
-                     * crate.serialize().toString()); }
-                     */// http://pastie.org/private/borniaknvtofbio6mfza
-                    String lootName;
-                    if (loot.getItemMeta().hasDisplayName())
+                    if (numCrates == 1 && numKeys == 1 && numTotalItems == 2)
                     {
-                        lootName = loot.getItemMeta().getDisplayName();
+                        ItemStack loot = new Crate(crate).getUncratedItem();
+                        if (StrangeWeapon.isStrangeWeapon(loot))
+                        {
+                            loot = new StrangeWeapon(loot).clone();
+                        }
+                        /*
+                         * if (loot == null) { getLogger().severe(
+                         * "LOOT IS NULL - Report this to the plugin author!");
+                         * getLogger().severe("Player " + player.getName() +
+                         * " tried to uncrate a crate!" +
+                         * crate.serialize().toString()); }
+                         */// http://pastie.org/private/borniaknvtofbio6mfza
+                        String lootName;
+                        if (loot.getItemMeta().hasDisplayName())
+                        {
+                            lootName = loot.getItemMeta().getDisplayName();
+                        }
+                        else
+                        {
+                            lootName = ChatColor.YELLOW + toTitleCase(loot.getType().toString().toLowerCase().replaceAll("_", " "));
+                        }
+                        getServer().broadcastMessage(player.getDisplayName() + ChatColor.WHITE + " has unboxed: " + ChatColor.YELLOW + lootName);
+                        // event.setResult(Result.ALLOW); //Maybe this fixes it?
+                        event.setCurrentItem(loot);
                     }
-                    else
+                    if (numStrangeWeapons == 1 && numStrangeParts == 1 && numTotalItems == 2)
                     {
-                        lootName = ChatColor.YELLOW + toTitleCase(loot.getType().toString().toLowerCase().replaceAll("_", " "));
+                        StrangeWeapon weapon = new StrangeWeapon(strangeWeapon);
+                        StrangePart part = new StrangePart(strangePart);
+                        weapon.getParts().put(part.getPart(), 0);
+                        event.setCurrentItem(weapon.getItemStack());
                     }
-                    getServer().broadcastMessage(player.getDisplayName() + ChatColor.WHITE + " has unboxed: " + ChatColor.YELLOW + lootName);
-                    // event.setResult(Result.ALLOW); //Maybe this fixes it?
-                    event.setCurrentItem(loot);
-                }
-                if (numStrangeWeapons == 1 && numStrangeParts == 1 && numTotalItems == 2)
-                {
-                    StrangeWeapon weapon = new StrangeWeapon(strangeWeapon);
-                    StrangePart part = new StrangePart(strangePart);
-                    weapon.getParts().put(part.getPart(), 0);
-                    event.setCurrentItem(weapon.getItemStack());
-                }
-                if (numStrangeWeapons == 1 && numNameTags == 1 && numTotalItems == 2)
-                {
-                    if (!tags.containsKey(player.getName()))
+                    if (numStrangeWeapons == 1 && numNameTags == 1 && numTotalItems == 2)
                     {
-                        player.sendMessage(ChatColor.RED + "Set a name with /tag before using a name tag");
-                        return;
+                        if (!tags.containsKey(player.getName()))
+                        {
+                            player.sendMessage(ChatColor.RED + "Set a name with /tag before using a name tag");
+                            return;
+                        }
+                        StrangeWeapon weapon = new StrangeWeapon(strangeWeapon);
+                        weapon.setCustomName(tags.get(player.getName()));
+                        event.setCurrentItem(weapon.getItemStack());
                     }
-                    StrangeWeapon weapon = new StrangeWeapon(strangeWeapon);
-                    weapon.setCustomName(tags.get(player.getName()));
-                    event.setCurrentItem(weapon.getItemStack());
-                }
-                if (numStrangeWeapons == 1 && numDescriptionTags == 1 && numTotalItems == 2)
-                {
-                    if (!tags.containsKey(player.getName()))
+                    if (numStrangeWeapons == 1 && numDescriptionTags == 1 && numTotalItems == 2)
                     {
-                        player.sendMessage(ChatColor.RED + "Set a description with /tag before using a description tag");
-                        return;
+                        if (!tags.containsKey(player.getName()))
+                        {
+                            player.sendMessage(ChatColor.RED + "Set a description with /tag before using a description tag");
+                            return;
+                        }
+                        StrangeWeapon weapon = new StrangeWeapon(strangeWeapon);
+                        weapon.setDescription(tags.get(player.getName()));
+                        event.setCurrentItem(weapon.getItemStack());
                     }
-                    StrangeWeapon weapon = new StrangeWeapon(strangeWeapon);
-                    weapon.setDescription(tags.get(player.getName()));
-                    event.setCurrentItem(weapon.getItemStack());
                 }
             }
     }
