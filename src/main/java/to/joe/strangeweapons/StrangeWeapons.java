@@ -35,7 +35,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.FurnaceInventory;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -641,6 +640,24 @@ public class StrangeWeapons extends JavaPlugin implements Listener
                 player.sendMessage(ChatColor.RED + "You may not use that on an anvil.");
             }
         }
+        if (event.getSlotType() == SlotType.FUEL)
+        {
+            ItemStack item = event.getCursor();
+            if ((event.getSlot() == 0 || event.getSlot() == 1) && event.getSlotType() == SlotType.FUEL && (Crate.isCrate(item) || MetaParser.isKey(item) || StrangePart.isPart(item) || MetaParser.isNameTag(item) || MetaParser.isDescriptionTag(item)))
+            {
+                event.setCancelled(true);
+                getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        player.updateInventory();
+                    }
+                }, 1);
+                player.sendMessage(ChatColor.RED + "The Hell you doing man! Dont Burn that!");
+            }
+            
+        }
         if (event.getSlotType() == SlotType.CRAFTING)
         {
             if (!(event.getInventory() instanceof CraftingInventory))
@@ -789,8 +806,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener
             {
                 if (event.getInventory() instanceof FurnaceInventory)
                 {
-                    player.sendMessage(ChatColor.RED + "The Hell you doing man! Dont Burn that!");
-                    return;
+                    
                 }
                 else
                 {
