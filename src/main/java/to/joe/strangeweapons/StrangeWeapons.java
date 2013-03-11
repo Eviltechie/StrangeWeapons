@@ -473,7 +473,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                         player.updateInventory();
                     }
                 }, 1);
-                player.sendMessage(ChatColor.RED + "You may not use that in a furnace.");
+                player.sendMessage(ChatColor.RED + "You may not trade that with a villager.");
             }
         }
         if (event.getSlotType() == SlotType.CRAFTING) {
