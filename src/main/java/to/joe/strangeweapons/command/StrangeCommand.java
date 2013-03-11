@@ -25,7 +25,7 @@ public class StrangeCommand implements CommandExecutor {
         Player player = (Player) sender;
         ItemStack item = player.getItemInHand();
         Part chosenPart = Part.PLAYER_KILLS;
-        if (args.length == 1) {
+        if (args.length >= 1 && player.hasPermission("strangeweapons.command.strange.specifypart")) {
             try {
                 chosenPart = Part.valueOf(args[0].toUpperCase());
             } catch (IllegalArgumentException e) {
