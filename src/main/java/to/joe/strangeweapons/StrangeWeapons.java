@@ -272,9 +272,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                                         }
                                     } else {
                                         dataStorage.recordDrop(player.getName(), item, true);
-                                        if (player.hasPermission("strangeweapons.drop.announceexempt")) { // If the player has this perm, we
-                                                                                                          // don't announce their drops in case
-                                                                                                          // they may be vanished
+                                        if (player.hasPermission("strangeweapons.drop.announceexempt")) { // If the player has this perm, we don't announce their drops in case they may be vanished
                                             player.sendMessage(ChatColor.GOLD + "You" + ChatColor.WHITE + " had: " + item.getItemMeta().getDisplayName() + ChatColor.WHITE + " thrown at thier feet.");
                                         } else {
                                             getServer().broadcastMessage(player.getDisplayName() + ChatColor.WHITE + " had: " + item.getItemMeta().getDisplayName() + ChatColor.WHITE + " thrown at thier feet.");
@@ -500,10 +498,10 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                         player.updateInventory();
                     }
                 }, 1);
-                player.sendMessage(ChatColor.RED + "You may not trade that with a villager.");
+                player.sendMessage(ChatColor.RED + "You may not trade that with a villager."); //Villager is not a furnace :D
             }
         }
-        if (event.getSlotType() == SlotType.FUEL) {
+        if (event.getSlotType() == SlotType.FUEL) { //Stop Crates from being used as fuel in furnaces or powered mine carts.
             ItemStack item = event.getCursor();
             if ((event.getSlot() == 0 || event.getSlot() == 1) && event.getSlotType() == SlotType.FUEL && (Crate.isCrate(item) || MetaParser.isKey(item) || StrangePart.isPart(item) || MetaParser.isNameTag(item) || MetaParser.isDescriptionTag(item))) {
                 event.setCancelled(true);
@@ -513,7 +511,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                         player.updateInventory();
                     }
                 }, 1);
-                player.sendMessage(ChatColor.RED + "The Hell you doing man! Dont Burn that!");
+                player.sendMessage(ChatColor.RED + "The Hell you doing man! Dont Burn that!"); 
             }
         }
         if (event.getSlotType() == SlotType.CRAFTING) {
