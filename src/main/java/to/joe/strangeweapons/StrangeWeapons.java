@@ -166,6 +166,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                     try {
                         PlayerDropData data = dataStorage.getPlayerDropData(time.getKey());
                         data.setPlayTime(data.getPlayTime() + (int) ((System.currentTimeMillis() - time.getValue()) / 1000));
+                        //dataStorage.updatePlayerDropData(data);
                         if (data.getPlayTime() >= data.getNextItemDrop() && dataStorage.itemCanDrop(data)) {
                             Map<ItemStack, Double> map = new HashMap<ItemStack, Double>();
                             if (getConfig().contains("drops")) {
@@ -207,10 +208,27 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                                         if (player.hasPermission("strangeweapons.drop.announceexempt")) { //If the player has this perm, we don't announce their drops in case they may be vanished
                                             player.sendMessage(ChatColor.GOLD + "You" + ChatColor.WHITE + " have found: " + ChatColor.YELLOW + lootName);
                                         } else {
-                                            getServer().broadcastMessage(player.getDisplayName() + ChatColor.WHITE + " has found: " + ChatColor.YELLOW + lootName);
+                                            getServer().broadcastMessage(ChatColor.BLUE + " (╯°□°）╯ " + player.getDisplayName() + ChatColor.WHITE + " has found: " + ChatColor.YELLOW + lootName + ChatColor.BLUE + " (⌐■_■) ");
                                         }
-                                    } else {
-                                        player.sendMessage(ChatColor.GOLD + "TIP: " + ChatColor.AQUA + "Make sure you have at least one empty spot in your inventory to receive random drops!");
+                                    }
+                                    // Player inventory was full lets throw the item at thier feet!
+                                    else {
+                                        dataStorage.recordDrop(player.getName(), item, false);
+                                        String lootName;
+                                        if (item.getItemMeta().hasDisplayName()) {
+                                            lootName = item.getItemMeta().getDisplayName();
+                                        } else {
+                                            lootName = ChatColor.YELLOW + toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " "));
+                                        }
+                                        if (player.hasPermission("strangeweapons.drop.announceexempt")) { // If the player has this perm, we
+                                                                                                          // don't announce their drops in case
+                                                                                                          // they may be vanished
+                                            player.sendMessage(ChatColor.GOLD + "You" + ChatColor.WHITE + " had: " + ChatColor.YELLOW + lootName + ChatColor.WHITE + " thrown at thier feet.");
+                                        } else {
+                                            getServer().broadcastMessage(player.getDisplayName() + ChatColor.WHITE + " had: " + ChatColor.YELLOW + lootName + ChatColor.WHITE + " thrown at thier feet.");
+                                        }
+                                        player.getWorld().dropItemNaturally(player.getLocation(), item);
+                                        player.sendMessage(ChatColor.GOLD + "TIP: " + ChatColor.YELLOW + "Make sure you have at least one empty spot in your inventory to receive random drops safely!");
                                     }
                                 }
                             }
@@ -253,7 +271,14 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                                             getServer().broadcastMessage(player.getDisplayName() + ChatColor.WHITE + " has found: " + item.getItemMeta().getDisplayName());
                                         }
                                     } else {
-                                        player.sendMessage(ChatColor.GOLD + "TIP: " + ChatColor.AQUA + "Make sure you have at least one empty spot in your inventory to receive random drops!");
+                                        dataStorage.recordDrop(player.getName(), item, true);
+                                        if (player.hasPermission("strangeweapons.drop.announceexempt")) { // If the player has this perm, we don't announce their drops in case they may be vanished
+                                            player.sendMessage(ChatColor.GOLD + "You" + ChatColor.WHITE + " had: " + item.getItemMeta().getDisplayName() + ChatColor.WHITE + " thrown at thier feet.");
+                                        } else {
+                                            getServer().broadcastMessage(player.getDisplayName() + ChatColor.WHITE + " had: " + item.getItemMeta().getDisplayName() + ChatColor.WHITE + " thrown at thier feet.");
+                                        }
+                                        player.getWorld().dropItemNaturally(player.getLocation(), item);
+                                        player.sendMessage(ChatColor.GOLD + "TIP: " + ChatColor.YELLOW + "Make sure you have at least one empty spot in your inventory to receive random drops safely!");
                                     }
                                 }
                             }
@@ -473,7 +498,20 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                         player.updateInventory();
                     }
                 }, 1);
-                player.sendMessage(ChatColor.RED + "You may not use that in a furnace.");
+                player.sendMessage(ChatColor.RED + "You may not trade that with a villager."); //Villager is not a furnace :D
+            }
+        }
+        if (event.getSlotType() == SlotType.FUEL) { //Stop Crates from being used as fuel in furnaces or powered mine carts.
+            ItemStack item = event.getCursor();
+            if ((event.getSlot() == 0 || event.getSlot() == 1) && event.getSlotType() == SlotType.FUEL && (Crate.isCrate(item) || MetaParser.isKey(item) || StrangePart.isPart(item) || MetaParser.isNameTag(item) || MetaParser.isDescriptionTag(item))) {
+                event.setCancelled(true);
+                getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+                    @Override
+                    public void run() {
+                        player.updateInventory();
+                    }
+                }, 1);
+                player.sendMessage(ChatColor.RED + "The Hell you doing man! Dont Burn that!"); 
             }
         }
         if (event.getSlotType() == SlotType.CRAFTING) {
@@ -709,4 +747,45 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
             event.getPlayer().sendMessage(ChatColor.RED + "You may not place strange weapons");
         }
     }
+
+    public String TimeDebuger(int debugT) {
+        int seconds = debugT;
+        int years = seconds / 31536000;
+        seconds = seconds % 31536000;
+        int months = seconds / 2628000;
+        seconds = seconds % 2628000;
+        int weeks = seconds / 604800;
+        seconds = seconds % 604800;
+        int days = seconds / 86400;
+        seconds = seconds % 86400;
+        int hours = seconds / 3600;
+        seconds = seconds % 3600;
+        int minutes = seconds / 60;
+        seconds = seconds % 60;
+        StringBuilder timeString = new StringBuilder(ChatColor.YELLOW + " time is " + ChatColor.AQUA);
+        if (years != 0) {
+            timeString.append(years + " years ");
+        }
+        if (months != 0) {
+            timeString.append(months + " months");
+        }
+        if (weeks != 0) {
+            timeString.append(weeks + " weeks ");
+        }
+        if (days != 0) {
+            timeString.append(days + " days ");
+        }
+        if (hours != 0) {
+            timeString.append(hours + " hours ");
+        }
+        if (minutes != 0) {
+            timeString.append(minutes + " minutes ");
+        }
+        if (seconds != 0) {
+            timeString.append(seconds + " seconds ");
+        }
+        return (timeString.toString());
+
+    }
+
 }
