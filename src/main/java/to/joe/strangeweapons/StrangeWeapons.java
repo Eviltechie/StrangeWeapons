@@ -141,58 +141,29 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
             return;
         }
 
-        itemDropLimit = getConfig().getInt("itemDropLimit", 9);
-        itemDropReset = getConfig().getInt("itemDropReset", 10080);
-        itemDropRollMaxTime = getConfig().getInt("itemDropRollMaxTime", 70);
-        itemDropRollMinTime = getConfig().getInt("itemDropRollMinTime", 30);
+        itemDropLimit = getConfig().getInt("dropConfig.itemDropLimit", 9);
+        itemDropReset = getConfig().getInt("dropConfig.itemDropReset", 10080);
+        itemDropRollMaxTime = getConfig().getInt("dropConfig.itemDropRollMaxTime", 70);
+        itemDropRollMinTime = getConfig().getInt("dropConfig.itemDropRollMinTime", 30);
 
-        crateDropLimit = getConfig().getInt("crateDropLimit", 3);
-        crateDropReset = getConfig().getInt("crateDropReset", 10080);
-        crateDropRollMaxTime = getConfig().getInt("crateDropRollMaxTime", 70);
-        crateDropRollMinTime = getConfig().getInt("crateDropRollMinTime", 30);
-
+ crateDropLimit = getConfig().getInt("dropConfig.crateDropLimit", 3);
+        crateDropReset = getConfig().getInt("dropConfig.crateDropReset", 10080);
+        crateDropRollMaxTime = getConfig().getInt("dropConfig.crateDropRollMaxTime", 70);
+        crateDropRollMinTime = getConfig().getInt("dropConfig.crateDropRollMinTime", 30);
         durability = getConfig().getBoolean("durability", true);
-        getLogger().warning("Global max drop reset time: " + itemDropReset);
-        getLogger().warning("Global max crate reset time: " + crateDropReset);
+
         Crate.plugin = this;
         StrangeWeapon.plugin = this;
         PlayerDropData.plugin = this;
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-
             @Override
             public void run() {
-                // Random rand = new Random();
-                // int min = 0, max = 100;
-                //  boolean shown = false;
                 for (Entry<String, Long> time : joinTimes.entrySet()) {
                     try {
                         PlayerDropData data = dataStorage.getPlayerDropData(time.getKey());
                         data.setPlayTime(data.getPlayTime() + (int) ((System.currentTimeMillis() - time.getValue()) / 1000));
                         dataStorage.updatePlayerDropData(data);
-                        // if (shown == false)
-                        //{
-                        // int randomNum = rand.nextInt(max - min + 1) + min;
-                        //if (randomNum > 75)
-                        // {
-                        //getServer().broadcastMessage(ChatColor.RED + "-------- Random Drop Debug for " + ChatColor.BLUE + data.getPlayer() + ChatColor.RED + "------");
-                        // getServer().broadcastMessage(ChatColor.WHITE
-                        // + "Playtime Debug : "
-                        // +TimeDebuger(data.getPlayTime()));
-                        // getServer().broadcastMessage(ChatColor.WHITE
-                        // + "NextItemDrop Debug : "
-                        // +TimeDebuger(data.getNextItemDrop()));
-                        //getServer().broadcastMessage(ChatColor.WHITE + "Playtime >= NextItemDrop? " + (data.getPlayTime() >= data.getNextItemDrop()));
-                        //getServer().broadcastMessage(ChatColor.WHITE + "Has player reached item drop limit? " + !dataStorage.itemCanDrop(data));
-                        // getServer().broadcastMessage(ChatColor.WHITE
-                        // + "NextCrateDrop Debug : "
-                        // +TimeDebuger(data.getNextCrateDrop()));
-                        // getServer().broadcastMessage(ChatColor.WHITE + "Playtime >= NextCrateDrop? " + (data.getPlayTime() >= data.getNextCrateDrop()));
-                        //  getServer().broadcastMessage(ChatColor.WHITE + "Has player reached crate drop limit? " + !dataStorage.crateCanDrop(data));
-                        //shown = true;
-                        // }
-                        //  }
-
                         if (data.getPlayTime() >= data.getNextItemDrop() && dataStorage.itemCanDrop(data)) {
                             Map<ItemStack, Double> map = new HashMap<ItemStack, Double>();
                             if (getConfig().contains("drops")) {
@@ -212,24 +183,12 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                                 getLogger().warning("There are no items that can be dropped!");
                             } else {
                                 Player player = getServer().getPlayerExact(time.getKey());
-                                if (player.hasPermission("strangeweapons.drop.dropitems")) { // Make sure they can receive items
+                                if (player.hasPermission("strangeweapons.drop.dropitems")) { //Make sure they can receive items
                                     ItemStack item = rc.next();
                                     if (StrangeWeapon.isStrangeWeapon(item)) {
                                         item = new StrangeWeapon(item).clone();
                                     }
-                                    Map<Integer, ItemStack> fail = player.getInventory().addItem(item); // If
-                                                                                                        // the
-                                                                                                        // player
-                                                                                                        // has
-                                                                                                        // a
-                                                                                                        // full
-                                                                                                        // inventory,
-                                                                                                        // we
-                                                                                                        // skip
-                                                                                                        // this
-                                                                                                        // drop
-                                                                                                        // for
-                                                                                                        // them
+                                    Map<Integer, ItemStack> fail = player.getInventory().addItem(item); //If the player has a full inventory, we skip this drop for them
                                     if (fail.isEmpty()) {
                                         dataStorage.recordDrop(player.getName(), item, false);
                                         String lootName;
@@ -238,9 +197,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                                         } else {
                                             lootName = ChatColor.YELLOW + toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " "));
                                         }
-                                        if (player.hasPermission("strangeweapons.drop.announceexempt")) { // If the player has this perm, we
-                                                                                                          // don't announce their drops in case
-                                                                                                          // they may be vanished
+                                        if (player.hasPermission("strangeweapons.drop.announceexempt")) { //If the player has this perm, we don't announce their drops in case they may be vanished
                                             player.sendMessage(ChatColor.GOLD + "You" + ChatColor.WHITE + " have found: " + ChatColor.YELLOW + lootName);
                                         } else {
                                             getServer().broadcastMessage(ChatColor.BLUE + " (╯°□°）╯ " + player.getDisplayName() + ChatColor.WHITE + " has found: " + ChatColor.YELLOW + lootName + ChatColor.BLUE + " (⌐■_■) ");
@@ -271,7 +228,6 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
 
                             data.rollItem();
                         }
-
                         if (data.getPlayTime() >= data.getNextCrateDrop() && dataStorage.crateCanDrop(data)) {
                             Set<String> allCrates;
                             if (getConfig().contains("crates")) {
@@ -293,25 +249,11 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                                 Collections.shuffle(crates);
                                 ItemStack item = new Crate(Integer.parseInt(crates.get(0))).getItemStack();
                                 Player player = getServer().getPlayerExact(time.getKey());
-                                if (player.hasPermission("strangeweapons.drop.dropcrates")) { // Make sure the player can receive crates
-                                    Map<Integer, ItemStack> fail = player.getInventory().addItem(item); // If
-                                                                                                        // the
-                                                                                                        // player
-                                                                                                        // has
-                                                                                                        // a
-                                                                                                        // full
-                                                                                                        // inventory,
-                                                                                                        // we
-                                                                                                        // skip
-                                                                                                        // this
-                                                                                                        // drop
-                                                                                                        // for
-                                                                                                        // them
+                                if (player.hasPermission("strangeweapons.drop.dropcrates")) { //Make sure the player can receive crates
+                                    Map<Integer, ItemStack> fail = player.getInventory().addItem(item); //If the player has a full inventory, we skip this drop for them
                                     if (fail.isEmpty()) {
                                         dataStorage.recordDrop(player.getName(), item, true);
-                                        if (player.hasPermission("strangeweapons.drop.announceexempt")) { // If the player has this perm, we
-                                                                                                          // don't announce their drops in case
-                                                                                                          // they may be vanished
+                                        if (player.hasPermission("strangeweapons.drop.announceexempt")) { //If the player has this perm, we don't announce their drops in case they may be vanished
                                             player.sendMessage(ChatColor.GOLD + "You" + ChatColor.WHITE + " have found: " + item.getItemMeta().getDisplayName());
                                         } else {
                                             getServer().broadcastMessage(player.getDisplayName() + ChatColor.WHITE + " has found: " + item.getItemMeta().getDisplayName());

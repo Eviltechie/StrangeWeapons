@@ -27,14 +27,15 @@ datastorage: yaml
 taglengthlimit: 50
 maxparts: 3
 durability: true
-itemDropLimit: 9
-itemDropReset: 10080
-itemDropRollMaxTime: 70
-itemDropRollMinTime: 30
-crateDropLimit: 3
-crateDropReset: 10080
-crateDropRollMaxTime: 70
-crateDropRollMinTime: 30
+dropConfig:
+  itemDropLimit: 9
+  itemDropReset: 10080
+  itemDropRollMaxTime: 70
+  itemDropRollMinTime: 30
+  crateDropLimit: 3
+  crateDropReset: 10080
+  crateDropRollMaxTime: 70
+  crateDropRollMinTime: 30
 database:
   url: jdbc:mysql://localhost:3306/database
   username: minecraft
