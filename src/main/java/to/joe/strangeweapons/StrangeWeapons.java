@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -353,8 +354,13 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
+        Player p = null;
         if (event.getDamager() instanceof Player) {
-            Player p = (Player) event.getDamager();
+            p = (Player) event.getDamager();
+        } else if (event.getDamager() instanceof Arrow && ((Arrow) event.getDamager()).getShooter() instanceof Player) {
+            p = (Player) ((Arrow) event.getDamager()).getShooter();
+        }
+        if (p != null) {
             if (p.getItemInHand().getAmount() > 0 && StrangeWeapon.isStrangeWeapon(p.getItemInHand())) {
                 if (!durability) {
                     p.getItemInHand().setDurability((short) 0);
