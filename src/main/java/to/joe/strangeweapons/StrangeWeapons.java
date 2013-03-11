@@ -549,7 +549,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                     }
                 }
             }, 1);
-        } else if (event.getSlotType() == SlotType.RESULT) {
+        } else if (event.getSlotType() == SlotType.RESULT && event.getInventory() instanceof CraftingInventory) {
             CraftingInventory craftingInventory = (CraftingInventory) event.getInventory();
             ItemStack[] matrix = craftingInventory.getMatrix();
             ItemStack strangeWeapon = null;
