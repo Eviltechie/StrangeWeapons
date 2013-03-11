@@ -104,6 +104,10 @@ public class CratesCommand implements CommandExecutor {
                     sender.sendMessage(ChatColor.RED + "That's not a number");
                     return true;
                 }
+                if (weight <= 0) {
+                    sender.sendMessage(ChatColor.RED + "Weight must be greater than zero");
+                    return true;
+                }
                 if (!plugin.getConfig().contains("crates")) {
                     sender.sendMessage(ChatColor.RED + "No crates exist. Create one with /crates newcrate");
                     return true;

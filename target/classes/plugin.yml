@@ -69,8 +69,10 @@ commands:
 permissions:
   strangeweapons.command.strange:
     description: Turn an item into a strange item
-  strangeweapons.command.strange.part:
-    description: Turn an item into a strange item with a defined part
+    children:
+      strangeweapons.command.strange.specifypart: true
+  strangeweapons.command.strange.specifypart:
+    description: Specify the initial part when using the strange command
   strangeweapons.command.newcrate:
     description:: Spawn crates
   strangeweapons.command.newkey:

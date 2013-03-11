@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,7 +35,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.CraftingInventory;
-import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -71,6 +71,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
     public int tagLengthLimit;
     private int maxParts;
     private boolean durability;
+    private boolean dropAtFeet;
 
     public int itemDropLimit;
     public int itemDropReset;
@@ -141,16 +142,18 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
             return;
         }
 
-        itemDropLimit = getConfig().getInt("dropConfig.itemDropLimit", 9);
-        itemDropReset = getConfig().getInt("dropConfig.itemDropReset", 10080);
-        itemDropRollMaxTime = getConfig().getInt("dropConfig.itemDropRollMaxTime", 70);
-        itemDropRollMinTime = getConfig().getInt("dropConfig.itemDropRollMinTime", 30);
+        itemDropLimit = getConfig().getInt("dropconfig.itemDropLimit", 9);
+        itemDropReset = getConfig().getInt("dropconfig.itemDropReset", 10080);
+        itemDropRollMaxTime = getConfig().getInt("dropconfig.itemDropRollMaxTime", 70);
+        itemDropRollMinTime = getConfig().getInt("dropconfig.itemDropRollMinTime", 30);
 
- crateDropLimit = getConfig().getInt("dropConfig.crateDropLimit", 3);
-        crateDropReset = getConfig().getInt("dropConfig.crateDropReset", 10080);
-        crateDropRollMaxTime = getConfig().getInt("dropConfig.crateDropRollMaxTime", 70);
-        crateDropRollMinTime = getConfig().getInt("dropConfig.crateDropRollMinTime", 30);
+        crateDropLimit = getConfig().getInt("dropconfig.crateDropLimit", 3);
+        crateDropReset = getConfig().getInt("dropconfig.crateDropReset", 10080);
+        crateDropRollMaxTime = getConfig().getInt("dropconfig.crateDropRollMaxTime", 70);
+        crateDropRollMinTime = getConfig().getInt("dropconfig.crateDropRollMinTime", 30);
+
         durability = getConfig().getBoolean("durability", true);
+        dropAtFeet = getConfig().getBoolean("dropitemiffull", false);
 
         Crate.plugin = this;
         StrangeWeapon.plugin = this;
@@ -163,7 +166,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                     try {
                         PlayerDropData data = dataStorage.getPlayerDropData(time.getKey());
                         data.setPlayTime(data.getPlayTime() + (int) ((System.currentTimeMillis() - time.getValue()) / 1000));
-                        dataStorage.updatePlayerDropData(data);
+                        //dataStorage.updatePlayerDropData(data);
                         if (data.getPlayTime() >= data.getNextItemDrop() && dataStorage.itemCanDrop(data)) {
                             Map<ItemStack, Double> map = new HashMap<ItemStack, Double>();
                             if (getConfig().contains("drops")) {
@@ -188,8 +191,13 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                                     if (StrangeWeapon.isStrangeWeapon(item)) {
                                         item = new StrangeWeapon(item).clone();
                                     }
-                                    Map<Integer, ItemStack> fail = player.getInventory().addItem(item); //If the player has a full inventory, we skip this drop for them
-                                    if (fail.isEmpty()) {
+                                    Map<Integer, ItemStack> fail = player.getInventory().addItem(item); //If the player has a full inventory, we skip this drop for them or drop it at their feet
+                                    if (dropAtFeet) {
+                                        for (ItemStack failedItem : fail.values()) {
+                                            player.getWorld().dropItem(player.getLocation(), failedItem);
+                                        }
+                                    }
+                                    if (fail.isEmpty() || dropAtFeet) {
                                         dataStorage.recordDrop(player.getName(), item, false);
                                         String lootName;
                                         if (item.getItemMeta().hasDisplayName()) {
@@ -203,8 +211,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                                             getServer().broadcastMessage(ChatColor.BLUE + " (╯°□°）╯ " + player.getDisplayName() + ChatColor.WHITE + " has found: " + ChatColor.YELLOW + lootName + ChatColor.BLUE + " (⌐■_■) ");
                                         }
                                     }
-                                    // Player inventory was full lets throw the
-                                    // item at thier feet!
+                                    // Player inventory was full lets throw the item at thier feet!
                                     else {
                                         dataStorage.recordDrop(player.getName(), item, false);
                                         String lootName;
@@ -250,8 +257,13 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                                 ItemStack item = new Crate(Integer.parseInt(crates.get(0))).getItemStack();
                                 Player player = getServer().getPlayerExact(time.getKey());
                                 if (player.hasPermission("strangeweapons.drop.dropcrates")) { //Make sure the player can receive crates
-                                    Map<Integer, ItemStack> fail = player.getInventory().addItem(item); //If the player has a full inventory, we skip this drop for them
-                                    if (fail.isEmpty()) {
+                                    Map<Integer, ItemStack> fail = player.getInventory().addItem(item); //If the player has a full inventory, we skip this drop for them or drop it at their feet
+                                    if (dropAtFeet) {
+                                        for (ItemStack failedItem : fail.values()) {
+                                            player.getWorld().dropItem(player.getLocation(), failedItem);
+                                        }
+                                    }
+                                    if (fail.isEmpty() || dropAtFeet) {
                                         dataStorage.recordDrop(player.getName(), item, true);
                                         if (player.hasPermission("strangeweapons.drop.announceexempt")) { //If the player has this perm, we don't announce their drops in case they may be vanished
                                             player.sendMessage(ChatColor.GOLD + "You" + ChatColor.WHITE + " have found: " + item.getItemMeta().getDisplayName());
@@ -369,8 +381,13 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
+        Player p = null;
         if (event.getDamager() instanceof Player) {
-            Player p = (Player) event.getDamager();
+            p = (Player) event.getDamager();
+        } else if (event.getDamager() instanceof Arrow && ((Arrow) event.getDamager()).getShooter() instanceof Player) {
+            p = (Player) ((Arrow) event.getDamager()).getShooter();
+        }
+        if (p != null) {
             if (p.getItemInHand().getAmount() > 0 && StrangeWeapon.isStrangeWeapon(p.getItemInHand())) {
                 if (!durability) {
                     p.getItemInHand().setDurability((short) 0);
@@ -460,6 +477,32 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                 player.sendMessage(ChatColor.RED + "You may not use that on an anvil.");
             }
         }
+        if (event.getInventory().getType() == InventoryType.FURNACE) {
+            ItemStack item = event.getCursor();
+            if (item.getType() != Material.AIR && ((event.getSlot() == 0 && event.getSlotType() == SlotType.CONTAINER) || (event.getSlot() == 1 && event.getSlotType() == SlotType.FUEL)) && (StrangeWeapon.isStrangeWeapon(item) || Crate.isCrate(item) || MetaParser.isKey(item) || StrangePart.isPart(item) || MetaParser.isNameTag(item) || MetaParser.isDescriptionTag(item))) {
+                event.setCancelled(true);
+                getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+                    @Override
+                    public void run() {
+                        player.updateInventory();
+                    }
+                }, 1);
+                player.sendMessage(ChatColor.RED + "You may not use that in a furnace.");
+            }
+        }
+        if (event.getInventory().getType() == InventoryType.MERCHANT) {
+            ItemStack item = event.getCursor();
+            if (item.getType() != Material.AIR && (event.getSlot() == 0 || event.getSlot() == 1) && event.getSlotType() == SlotType.CRAFTING && (StrangeWeapon.isStrangeWeapon(item) || Crate.isCrate(item) || MetaParser.isKey(item) || StrangePart.isPart(item) || MetaParser.isNameTag(item) || MetaParser.isDescriptionTag(item))) {
+                event.setCancelled(true);
+                getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+                    @Override
+                    public void run() {
+                        player.updateInventory();
+                    }
+                }, 1);
+                player.sendMessage(ChatColor.RED + "You may not trade that with a villager.");
+            }
+        }
         if (event.getSlotType() == SlotType.FUEL) {
             ItemStack item = event.getCursor();
             if ((event.getSlot() == 0 || event.getSlot() == 1) && event.getSlotType() == SlotType.FUEL && (Crate.isCrate(item) || MetaParser.isKey(item) || StrangePart.isPart(item) || MetaParser.isNameTag(item) || MetaParser.isDescriptionTag(item))) {
@@ -472,7 +515,6 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                 }, 1);
                 player.sendMessage(ChatColor.RED + "The Hell you doing man! Dont Burn that!");
             }
-
         }
         if (event.getSlotType() == SlotType.CRAFTING) {
             if (!(event.getInventory() instanceof CraftingInventory)) {
@@ -579,102 +621,94 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                     }
                 }
             }, 1);
-        } else if (event.getSlotType() == SlotType.RESULT) {
-            if (event.getInventory() instanceof FurnaceInventory) {
-
-            } else {
-
-                CraftingInventory craftingInventory = (CraftingInventory) event.getInventory();
-                ItemStack[] matrix = craftingInventory.getMatrix();
-                ItemStack strangeWeapon = null;
-                int numStrangeWeapons = 0;
-                ItemStack crate = null;
-                int numCrates = 0;
-                ItemStack key = null;
-                int numKeys = 0;
-                ItemStack strangePart = null;
-                int numStrangeParts = 0;
-                ItemStack nameTag = null;
-                int numNameTags = 0;
-                ItemStack descriptionTag = null;
-                int numDescriptionTags = 0;
-                ItemStack normalItem = null;
-                int numNormalItems = 0;
-                int numTotalItems = 0;
-                for (ItemStack i : matrix) {
-                    if (i == null || i.getTypeId() == 0) {
-                        continue;
-                    }
-                    if (StrangeWeapon.isStrangeWeapon(i)) {
-                        numStrangeWeapons++;
-                        strangeWeapon = i;
-                    } else if (Crate.isCrate(i)) {
-                        numCrates++;
-                        crate = i;
-                    } else if (MetaParser.isKey(i)) {
-                        numKeys++;
-                        key = i;
-                    } else if (StrangePart.isPart(i)) {
-                        numStrangeParts++;
-                        strangePart = i;
-                    } else if (MetaParser.isNameTag(i)) {
-                        numNameTags++;
-                        nameTag = i;
-                    } else if (MetaParser.isDescriptionTag(i)) {
-                        numDescriptionTags++;
-                        descriptionTag = i;
-                    } else {
-                        numNormalItems++;
-                        normalItem = i;
-                    }
-                    numTotalItems++;
+        } else if (event.getSlotType() == SlotType.RESULT && event.getInventory() instanceof CraftingInventory) {
+            CraftingInventory craftingInventory = (CraftingInventory) event.getInventory();
+            ItemStack[] matrix = craftingInventory.getMatrix();
+            ItemStack strangeWeapon = null;
+            int numStrangeWeapons = 0;
+            ItemStack crate = null;
+            int numCrates = 0;
+            ItemStack key = null;
+            int numKeys = 0;
+            ItemStack strangePart = null;
+            int numStrangeParts = 0;
+            ItemStack nameTag = null;
+            int numNameTags = 0;
+            ItemStack descriptionTag = null;
+            int numDescriptionTags = 0;
+            ItemStack normalItem = null;
+            int numNormalItems = 0;
+            int numTotalItems = 0;
+            for (ItemStack i : matrix) {
+                if (i == null || i.getTypeId() == 0) {
+                    continue;
                 }
-                if (numCrates == 1 && numKeys == 1 && numTotalItems == 2) {
-                    ItemStack loot = new Crate(crate).getUncratedItem();
-                    if (StrangeWeapon.isStrangeWeapon(loot)) {
-                        loot = new StrangeWeapon(loot).clone();
-                    }
-                    /*
-                     * if (loot == null) { getLogger().severe(
-                     * "LOOT IS NULL - Report this to the plugin author!");
-                     * getLogger().severe("Player " + player.getName() +
-                     * " tried to uncrate a crate!" +
-                     * crate.serialize().toString()); }
-                     */// http://pastie.org/private/borniaknvtofbio6mfza
-                    String lootName;
-                    if (loot.getItemMeta().hasDisplayName()) {
-                        lootName = loot.getItemMeta().getDisplayName();
-                    } else {
-                        lootName = ChatColor.YELLOW + toTitleCase(loot.getType().toString().toLowerCase().replaceAll("_", " "));
-                    }
-                    getServer().broadcastMessage(player.getDisplayName() + ChatColor.WHITE + " has unboxed: " + ChatColor.YELLOW + lootName);
-                    // event.setResult(Result.ALLOW); //Maybe this fixes it?
-                    event.setCurrentItem(loot);
+                if (StrangeWeapon.isStrangeWeapon(i)) {
+                    numStrangeWeapons++;
+                    strangeWeapon = i;
+                } else if (Crate.isCrate(i)) {
+                    numCrates++;
+                    crate = i;
+                } else if (MetaParser.isKey(i)) {
+                    numKeys++;
+                    key = i;
+                } else if (StrangePart.isPart(i)) {
+                    numStrangeParts++;
+                    strangePart = i;
+                } else if (MetaParser.isNameTag(i)) {
+                    numNameTags++;
+                    nameTag = i;
+                } else if (MetaParser.isDescriptionTag(i)) {
+                    numDescriptionTags++;
+                    descriptionTag = i;
+                } else {
+                    numNormalItems++;
+                    normalItem = i;
                 }
-                if (numStrangeWeapons == 1 && numStrangeParts == 1 && numTotalItems == 2) {
-                    StrangeWeapon weapon = new StrangeWeapon(strangeWeapon);
-                    StrangePart part = new StrangePart(strangePart);
-                    weapon.getParts().put(part.getPart(), 0);
-                    event.setCurrentItem(weapon.getItemStack());
+                numTotalItems++;
+            }
+            if (numCrates == 1 && numKeys == 1 && numTotalItems == 2) {
+                ItemStack loot = new Crate(crate).getUncratedItem();
+                if (StrangeWeapon.isStrangeWeapon(loot)) {
+                    loot = new StrangeWeapon(loot).clone();
                 }
-                if (numStrangeWeapons == 1 && numNameTags == 1 && numTotalItems == 2) {
-                    if (!tags.containsKey(player.getName())) {
-                        player.sendMessage(ChatColor.RED + "Set a name with /tag before using a name tag");
-                        return;
-                    }
-                    StrangeWeapon weapon = new StrangeWeapon(strangeWeapon);
-                    weapon.setCustomName(tags.get(player.getName()));
-                    event.setCurrentItem(weapon.getItemStack());
+                /*if (loot == null) {
+                    getLogger().severe("LOOT IS NULL - Report this to the plugin author!");
+                    getLogger().severe("Player " + player.getName() + " tried to uncrate a crate!" + crate.serialize().toString());
+                }*///http://pastie.org/private/borniaknvtofbio6mfza
+                String lootName;
+                if (loot.getItemMeta().hasDisplayName()) {
+                    lootName = loot.getItemMeta().getDisplayName();
+                } else {
+                    lootName = ChatColor.YELLOW + toTitleCase(loot.getType().toString().toLowerCase().replaceAll("_", " "));
                 }
-                if (numStrangeWeapons == 1 && numDescriptionTags == 1 && numTotalItems == 2) {
-                    if (!tags.containsKey(player.getName())) {
-                        player.sendMessage(ChatColor.RED + "Set a description with /tag before using a description tag");
-                        return;
-                    }
-                    StrangeWeapon weapon = new StrangeWeapon(strangeWeapon);
-                    weapon.setDescription(tags.get(player.getName()));
-                    event.setCurrentItem(weapon.getItemStack());
+                getServer().broadcastMessage(player.getDisplayName() + ChatColor.WHITE + " has unboxed: " + ChatColor.YELLOW + lootName);
+                //event.setResult(Result.ALLOW); //Maybe this fixes it?
+                event.setCurrentItem(loot);
+            }
+            if (numStrangeWeapons == 1 && numStrangeParts == 1 && numTotalItems == 2) {
+                StrangeWeapon weapon = new StrangeWeapon(strangeWeapon);
+                StrangePart part = new StrangePart(strangePart);
+                weapon.getParts().put(part.getPart(), 0);
+                event.setCurrentItem(weapon.getItemStack());
+            }
+            if (numStrangeWeapons == 1 && numNameTags == 1 && numTotalItems == 2) {
+                if (!tags.containsKey(player.getName())) {
+                    player.sendMessage(ChatColor.RED + "Set a name with /tag before using a name tag");
+                    return;
                 }
+                StrangeWeapon weapon = new StrangeWeapon(strangeWeapon);
+                weapon.setCustomName(tags.get(player.getName()));
+                event.setCurrentItem(weapon.getItemStack());
+            }
+            if (numStrangeWeapons == 1 && numDescriptionTags == 1 && numTotalItems == 2) {
+                if (!tags.containsKey(player.getName())) {
+                    player.sendMessage(ChatColor.RED + "Set a description with /tag before using a description tag");
+                    return;
+                }
+                StrangeWeapon weapon = new StrangeWeapon(strangeWeapon);
+                weapon.setDescription(tags.get(player.getName()));
+                event.setCurrentItem(weapon.getItemStack());
             }
         }
     }
