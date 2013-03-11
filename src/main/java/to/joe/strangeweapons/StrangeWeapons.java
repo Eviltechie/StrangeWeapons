@@ -70,6 +70,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
     public int tagLengthLimit;
     private int maxParts;
     private boolean durability;
+    private boolean dropAtFeet;
 
     public int itemDropLimit;
     public int itemDropReset;
@@ -151,6 +152,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
         crateDropRollMinTime = getConfig().getInt("dropconfig.crateDropRollMinTime", 30);
 
         durability = getConfig().getBoolean("durability", true);
+        dropAtFeet = getConfig().getBoolean("dropitemiffull", false);
 
         Crate.plugin = this;
         StrangeWeapon.plugin = this;
@@ -187,8 +189,13 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                                     if (StrangeWeapon.isStrangeWeapon(item)) {
                                         item = new StrangeWeapon(item).clone();
                                     }
-                                    Map<Integer, ItemStack> fail = player.getInventory().addItem(item); //If the player has a full inventory, we skip this drop for them
-                                    if (fail.isEmpty()) {
+                                    Map<Integer, ItemStack> fail = player.getInventory().addItem(item); //If the player has a full inventory, we skip this drop for them or drop it at their feet
+                                    if (dropAtFeet) {
+                                        for (ItemStack failedItem : fail.values()) {
+                                            player.getWorld().dropItem(player.getLocation(), failedItem);
+                                        }
+                                    }
+                                    if (fail.isEmpty() || dropAtFeet) {
                                         dataStorage.recordDrop(player.getName(), item, false);
                                         String lootName;
                                         if (item.getItemMeta().hasDisplayName()) {
@@ -231,8 +238,13 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                                 ItemStack item = new Crate(Integer.parseInt(crates.get(0))).getItemStack();
                                 Player player = getServer().getPlayerExact(time.getKey());
                                 if (player.hasPermission("strangeweapons.drop.dropcrates")) { //Make sure the player can receive crates
-                                    Map<Integer, ItemStack> fail = player.getInventory().addItem(item); //If the player has a full inventory, we skip this drop for them
-                                    if (fail.isEmpty()) {
+                                    Map<Integer, ItemStack> fail = player.getInventory().addItem(item); //If the player has a full inventory, we skip this drop for them or drop it at their feet
+                                    if (dropAtFeet) {
+                                        for (ItemStack failedItem : fail.values()) {
+                                            player.getWorld().dropItem(player.getLocation(), failedItem);
+                                        }
+                                    }
+                                    if (fail.isEmpty() || dropAtFeet) {
                                         dataStorage.recordDrop(player.getName(), item, true);
                                         if (player.hasPermission("strangeweapons.drop.announceexempt")) { //If the player has this perm, we don't announce their drops in case they may be vanished
                                             player.sendMessage(ChatColor.GOLD + "You" + ChatColor.WHITE + " have found: " + item.getItemMeta().getDisplayName());

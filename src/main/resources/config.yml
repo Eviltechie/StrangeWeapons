@@ -27,6 +27,7 @@ datastorage: yaml
 taglengthlimit: 50
 maxparts: 3
 durability: true
+dropitemiffull: false
 dropconfig:
   itemDropLimit: 9
   itemDropReset: 10080
