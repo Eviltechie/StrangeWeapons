@@ -49,6 +49,10 @@ public class DropsCommand implements CommandExecutor {
                     sender.sendMessage(ChatColor.RED + "That's not a number");
                     return true;
                 }
+                if (weight <= 0) {
+                    sender.sendMessage(ChatColor.RED + "Weight must be greater than zero");
+                    return true;
+                }
                 ConfigurationSection cs = plugin.getConfig().getConfigurationSection("drops");
                 int maxItem = 0;
                 if (plugin.getConfig().contains("drops")) {
