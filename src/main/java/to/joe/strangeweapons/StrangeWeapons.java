@@ -444,6 +444,19 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                 player.sendMessage(ChatColor.RED + "You may not use that on an anvil.");
             }
         }
+        if (event.getInventory().getType() == InventoryType.FURNACE) {
+            ItemStack item = event.getCursor();
+            if (item.getType() != Material.AIR && ((event.getSlot() == 0 && event.getSlotType() == SlotType.CONTAINER) || (event.getSlot() == 1 && event.getSlotType() == SlotType.FUEL)) && (StrangeWeapon.isStrangeWeapon(item) || Crate.isCrate(item) || MetaParser.isKey(item) || StrangePart.isPart(item) || MetaParser.isNameTag(item) || MetaParser.isDescriptionTag(item))) {
+                event.setCancelled(true);
+                getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+                    @Override
+                    public void run() {
+                        player.updateInventory();
+                    }
+                }, 1);
+                player.sendMessage(ChatColor.RED + "You may not use that in a furnace.");
+            }
+        }
         if (event.getSlotType() == SlotType.CRAFTING) {
             if (!(event.getInventory() instanceof CraftingInventory)) {
                 return;
