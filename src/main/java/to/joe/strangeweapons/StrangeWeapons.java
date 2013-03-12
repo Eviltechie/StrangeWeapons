@@ -18,6 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.PoweredMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -31,6 +32,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.InventoryType.SlotType;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -421,6 +423,18 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
         if (!durability && event.getAction() == Action.RIGHT_CLICK_BLOCK && (mat.equals(Material.WOOD_HOE) || mat.equals(Material.STONE_HOE) || mat.equals(Material.IRON_HOE) || mat.equals(Material.GOLD_HOE) || mat.equals(Material.DIAMOND_HOE)) && StrangeWeapon.isStrangeWeapon(event.getItem())) {
             event.getItem().setDurability((short) 0);
             event.getPlayer().updateInventory();
+        }
+    }
+    
+    @SuppressWarnings("deprecation")
+    @EventHandler
+    public void onInteract(PlayerInteractEntityEvent event) {
+        Player p = event.getPlayer();
+        ItemStack item = event.getPlayer().getItemInHand();
+        if (event.getRightClicked() instanceof PoweredMinecart && item.getType() == Material.COAL && StrangeWeapon.isStrangeWeapon(p.getItemInHand())) {
+            event.setCancelled(true);
+            p.updateInventory();
+            p.sendMessage(ChatColor.RED + "You may not use that in a powered minecart.");
         }
     }
 
