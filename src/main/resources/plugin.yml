@@ -23,7 +23,7 @@ commands:
     description: Spawn a strange part
     permission: strangeweapons.command.newpart
     permission-message: You may not spawn strange parts
-    usage: /newpart [part] <quantity>
+    usage: /newpart [part] <quantity> <player>
   newnametag:
     description: Spawn a name tag
     permission: strangeweapons.command.newnametag
