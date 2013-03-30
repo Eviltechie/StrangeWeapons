@@ -160,6 +160,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
         Crate.plugin = this;
         StrangeWeapon.plugin = this;
         PlayerDropData.plugin = this;
+        Util.plugin = this;
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             @Override

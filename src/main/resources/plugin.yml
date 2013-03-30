@@ -13,7 +13,7 @@ commands:
     description: Spawn a Steve Co. Supply Crate
     permission: strangeweapons.command.newcrate
     permission-message: You may not spawn crates
-    usage: /newcrate [series] <quantity>
+    usage: /newcrate [series] <quantity> <player>
   newkey:
     description: Spawn a Steve Co. Key
     permission: strangeweapons.command.newkey
