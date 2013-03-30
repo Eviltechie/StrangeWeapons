@@ -426,7 +426,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
             event.getPlayer().updateInventory();
         }
     }
-    
+
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onInteract(PlayerInteractEntityEvent event) {
