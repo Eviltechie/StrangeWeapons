@@ -70,7 +70,12 @@ public class NewPartCommand implements CommandExecutor {
         ItemStack part = new StrangePart(chosenPart).getItemStack();
         part.setAmount(quantity);
         target.getInventory().addItem(part);
-        sender.sendMessage(ChatColor.GOLD + "Given " + ChatColor.AQUA + quantity + ChatColor.GOLD + " strange part(s) of type \"" + ChatColor.AQUA + chosenPart.getName() + ChatColor.GOLD + "\"");
+        
+        if (target.equals(sender)) {
+            sender.sendMessage(ChatColor.GOLD + "Given " + ChatColor.AQUA + "you " + quantity + ChatColor.GOLD + " strange part(s) of type \"" + ChatColor.AQUA + chosenPart.getName() + ChatColor.GOLD + "\"");
+        } else {
+            sender.sendMessage(ChatColor.GOLD + "Given " + ChatColor.AQUA + target.getName() + " " + quantity + ChatColor.GOLD + " strange part(s) of type \"" + ChatColor.AQUA + chosenPart.getName() + ChatColor.GOLD + "\"");
+        }
         return true;
     }
 }
