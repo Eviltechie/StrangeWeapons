@@ -33,7 +33,7 @@ commands:
     description: Spawn a description tag
     permission: strangeweapons.command.newdescriptiontag
     permission-message: You may not spawn description tags
-    usage: /newdescriptiontag <quantity>
+    usage: /newdescriptiontag <quantity> <player>
   tag:
     description: Set a string to use with name or description tags
     permission: strangeweapons.command.tag

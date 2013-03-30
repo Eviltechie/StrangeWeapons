@@ -45,7 +45,9 @@ public class NewCrateCommand implements CommandExecutor {
 
             if (args.length > 1) { //Try for the quantity. This is optional.
                 quantity = Integer.parseInt(args[1]);
-                if (quantity > 64) {
+                if (quantity < 1) {
+                    quantity = 1;
+                } else if (quantity > 64) {
                     quantity = 64;
                 }
             }
@@ -77,7 +79,7 @@ public class NewCrateCommand implements CommandExecutor {
         if (target.equals(sender)) {
             sender.sendMessage(ChatColor.GOLD + "Given " + ChatColor.AQUA + "you " + quantity + ChatColor.GOLD + " series " + ChatColor.AQUA + series + ChatColor.GOLD + " crate(s)");
         } else {
-            sender.sendMessage(ChatColor.GOLD + "Given " + ChatColor.AQUA + target.getName() + quantity + ChatColor.GOLD + " series " + ChatColor.AQUA + series + ChatColor.GOLD + " crate(s)");
+            sender.sendMessage(ChatColor.GOLD + "Given " + ChatColor.AQUA + target.getName() + " " + quantity + ChatColor.GOLD + " series " + ChatColor.AQUA + series + ChatColor.GOLD + " crate(s)");
         }
         return true;
     }
