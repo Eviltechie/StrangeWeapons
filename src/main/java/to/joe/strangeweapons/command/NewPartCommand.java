@@ -70,7 +70,7 @@ public class NewPartCommand implements CommandExecutor {
         ItemStack part = new StrangePart(chosenPart).getItemStack();
         part.setAmount(quantity);
         target.getInventory().addItem(part);
-        
+
         if (target.equals(sender)) {
             sender.sendMessage(ChatColor.GOLD + "Given " + ChatColor.AQUA + "you " + quantity + ChatColor.GOLD + " strange part(s) of type \"" + ChatColor.AQUA + chosenPart.getName() + ChatColor.GOLD + "\"");
         } else {
