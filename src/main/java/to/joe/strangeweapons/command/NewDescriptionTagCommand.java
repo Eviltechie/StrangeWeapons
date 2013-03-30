@@ -61,7 +61,6 @@ public class NewDescriptionTagCommand implements CommandExecutor {
         } else {
             sender.sendMessage(ChatColor.GOLD + "Given " + ChatColor.AQUA + target.getName() + " " + quantity + ChatColor.GOLD + " description tag(s)");
         }
-        sender.sendMessage(ChatColor.GOLD + "Given " + ChatColor.AQUA + quantity + ChatColor.GOLD + " description tag(s)");
         return true;
     }
 }
