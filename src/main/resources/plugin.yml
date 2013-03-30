@@ -28,7 +28,7 @@ commands:
     description: Spawn a name tag
     permission: strangeweapons.command.newnametag
     permission-message: You may not spawn name tags
-    usage: /newnametag <quantity>
+    usage: /newnametag <quantity> <player>
   newdescriptiontag:
     description: Spawn a description tag
     permission: strangeweapons.command.newdescriptiontag
