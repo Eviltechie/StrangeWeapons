@@ -34,6 +34,7 @@ import to.joe.strangeweapons.command.NewKeyCommand;
 import to.joe.strangeweapons.command.NewNameTagCommand;
 import to.joe.strangeweapons.command.NewPartCommand;
 import to.joe.strangeweapons.command.PlaytimeCommand;
+import to.joe.strangeweapons.command.SetQualityCommand;
 import to.joe.strangeweapons.command.SpawnStrangeCommand;
 import to.joe.strangeweapons.command.StrangeCommand;
 import to.joe.strangeweapons.command.TagCommand;
@@ -75,6 +76,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener { //TODO Setq
         getCommand("listparts").setExecutor(new ListPartsCommand());
         getCommand("spawnstrange").setExecutor(new SpawnStrangeCommand());
         getCommand("listqualities").setExecutor(new ListQualitiesCommand());
+        getCommand("setquality").setExecutor(new SetQualityCommand());
         getServer().getPluginManager().registerEvents(this, this);
 
         for (String s : getConfig().getStringList("idstrings")) {

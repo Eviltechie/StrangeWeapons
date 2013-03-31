@@ -76,6 +76,11 @@ commands:
     permission: strangeweapons.command.listqualities
     permission-message: You may not list weapon qualities
     usage: /listqualities
+  setquality:
+    description: Set the quality of the strange weapon you are holding
+    permission: strangeweapons.command.setquality
+    permission-message: You may not set weapon quality
+    usage: /setquality [quality]
 permissions:
   strangeweapons.command.strange:
     description: Turn an item into a strange item
@@ -110,6 +115,8 @@ permissions:
     description: Spawn strange weapons
   strangeweapons.command.listqualities:
     description: List weapon qualities
+  strangeweapons.command.setquality:
+    description: Set weapon quality
   strangeweapons.drop.announceexempt:
     description: Does not announce publicly when this player gets a drop, in case they may be vanished
   strangeweapons.drop.dropcrates:
