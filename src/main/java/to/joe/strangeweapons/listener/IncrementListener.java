@@ -9,16 +9,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.PoweredMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import to.joe.strangeweapons.Part;
@@ -55,7 +51,6 @@ public class IncrementListener implements Listener {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
         Player p = null;
@@ -66,10 +61,6 @@ public class IncrementListener implements Listener {
         }
         if (p != null) {
             if (p.getItemInHand().getAmount() > 0 && StrangeWeapon.isStrangeWeapon(p.getItemInHand())) {
-                if (!plugin.config.durability) {
-                    p.getItemInHand().setDurability((short) 0);
-                    p.updateInventory();
-                }
                 StrangeWeapon item = new StrangeWeapon(p.getItemInHand());
                 Entry<Part, Integer> oldPrimary = item.getPrimary();
                 String oldName = Util.getWeaponName(p.getItemInHand(), (int) (oldPrimary.getValue() * oldPrimary.getKey().getMultiplier()));
@@ -84,15 +75,10 @@ public class IncrementListener implements Listener {
         }
     }
 
-    @SuppressWarnings("deprecation")
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player p = event.getPlayer();
         if (p.getItemInHand().getAmount() > 0 && StrangeWeapon.isStrangeWeapon(p.getItemInHand())) {
-            if (!plugin.config.durability && p.getItemInHand().getType() != Material.BOW) {
-                p.getItemInHand().setDurability((short) 0);
-                p.updateInventory();
-            }
             StrangeWeapon item = new StrangeWeapon(p.getItemInHand());
             Entry<Part, Integer> oldPrimary = item.getPrimary();
             String oldName = Util.getWeaponName(p.getItemInHand(), (int) (oldPrimary.getValue() * oldPrimary.getKey().getMultiplier()));
@@ -108,28 +94,6 @@ public class IncrementListener implements Listener {
 
     @SuppressWarnings("deprecation")
     @EventHandler
-    public void onBowFire(EntityShootBowEvent event) {
-        if (!plugin.config.durability && event.getEntity() instanceof Player && StrangeWeapon.isStrangeWeapon(event.getBow())) {
-            event.getBow().setDurability((short) 0);
-            ((Player) event.getEntity()).updateInventory();
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
-        if (event.getItem() == null) {
-            return;
-        }
-        Material mat = event.getItem().getType();
-        if (!plugin.config.durability && event.getAction() == Action.RIGHT_CLICK_BLOCK && (mat.equals(Material.WOOD_HOE) || mat.equals(Material.STONE_HOE) || mat.equals(Material.IRON_HOE) || mat.equals(Material.GOLD_HOE) || mat.equals(Material.DIAMOND_HOE)) && StrangeWeapon.isStrangeWeapon(event.getItem())) {
-            event.getItem().setDurability((short) 0);
-            event.getPlayer().updateInventory();
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
     public void onInteract(PlayerInteractEntityEvent event) {
         Player p = event.getPlayer();
         ItemStack item = event.getPlayer().getItemInHand();
@@ -137,15 +101,6 @@ public class IncrementListener implements Listener {
             event.setCancelled(true);
             p.updateInventory();
             p.sendMessage(ChatColor.RED + "You may not use that in a powered minecart.");
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onFish(PlayerFishEvent event) {
-        if (!plugin.config.durability && event.getPlayer().getItemInHand().getType().equals(Material.FISHING_ROD) && StrangeWeapon.isStrangeWeapon(event.getPlayer().getItemInHand())) {
-            event.getPlayer().getItemInHand().setDurability((short) 0);
-            event.getPlayer().updateInventory();
         }
     }
 
