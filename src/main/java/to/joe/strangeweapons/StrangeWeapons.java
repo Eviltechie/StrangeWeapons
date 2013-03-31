@@ -164,7 +164,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                                         if (item.getItemMeta().hasDisplayName()) {
                                             lootName = item.getItemMeta().getDisplayName();
                                         } else {
-                                            lootName = ChatColor.YELLOW + toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " "));
+                                            lootName = ChatColor.YELLOW + Util.toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " "));
                                         }
                                         if (player.hasPermission("strangeweapons.drop.announceexempt")) { //If the player has this perm, we don't announce their drops in case they may be vanished
                                             player.sendMessage(ChatColor.GOLD + "You" + ChatColor.WHITE + " have found: " + ChatColor.YELLOW + lootName);
@@ -252,14 +252,6 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
         }
     }
 
-    public static String toTitleCase(String string) {
-        StringBuilder titleString = new StringBuilder();
-        for (String s : string.split(" ")) {
-            titleString.append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).append(" ");
-        }
-        return titleString.substring(0, titleString.length() - 1);
-    }
-
     public String getWeaponName(int stat) {
         while (!config.weaponText.containsKey(stat)) {
             stat--;
@@ -270,7 +262,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
     }
 
     public String getWeaponName(ItemStack item, int stat) {
-        return getWeaponName(stat) + " " + toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " "));
+        return getWeaponName(stat) + " " + Util.toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " "));
     }
 
     public DataStorageInterface getDSI() {
@@ -306,7 +298,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                 Entry<Part, Integer> newPrimary = item.getPrimary();
                 String newName = getWeaponName(p.getItemInHand(), (int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier()));
                 if (!oldName.equals(newName)) {
-                    getServer().broadcastMessage(p.getDisplayName() + "'s " + toTitleCase(p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ")) + ChatColor.WHITE + " has reached a new rank: " + ChatColor.GOLD + getWeaponName((int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier())));
+                    getServer().broadcastMessage(p.getDisplayName() + "'s " + Util.toTitleCase(p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ")) + ChatColor.WHITE + " has reached a new rank: " + ChatColor.GOLD + getWeaponName((int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier())));
                 }
                 p.setItemInHand(item.getItemStack());
             }
@@ -335,7 +327,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                 Entry<Part, Integer> newPrimary = item.getPrimary();
                 String newName = getWeaponName(p.getItemInHand(), (int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier()));
                 if (!oldName.equals(newName)) {
-                    getServer().broadcastMessage(p.getDisplayName() + "'s " + toTitleCase(p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ")) + ChatColor.WHITE + " has reached a new rank: " + getWeaponName((int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier())));
+                    getServer().broadcastMessage(p.getDisplayName() + "'s " + Util.toTitleCase(p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ")) + ChatColor.WHITE + " has reached a new rank: " + getWeaponName((int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier())));
                 }
                 p.setItemInHand(item.getItemStack());
             }
@@ -358,7 +350,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
             Entry<Part, Integer> newPrimary = item.getPrimary();
             String newName = getWeaponName(p.getItemInHand(), (int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier()));
             if (!oldName.equals(newName)) {
-                getServer().broadcastMessage(p.getDisplayName() + "'s " + toTitleCase(p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ")) + ChatColor.WHITE + " has reached a new rank: " + getWeaponName((int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier())));
+                getServer().broadcastMessage(p.getDisplayName() + "'s " + Util.toTitleCase(p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ")) + ChatColor.WHITE + " has reached a new rank: " + getWeaponName((int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier())));
             }
             p.setItemInHand(item.getItemStack());
         }
@@ -426,7 +418,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                 Entry<Part, Integer> newPrimary = item.getPrimary();
                 String newName = getWeaponName(p.getItemInHand(), (int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier()));
                 if (!oldName.equals(newName)) {
-                    getServer().broadcastMessage(p.getDisplayName() + "'s " + toTitleCase(p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ")) + ChatColor.WHITE + " has reached a new rank: " + getWeaponName((int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier())));
+                    getServer().broadcastMessage(p.getDisplayName() + "'s " + Util.toTitleCase(p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ")) + ChatColor.WHITE + " has reached a new rank: " + getWeaponName((int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier())));
                 }
                 p.setItemInHand(item.getItemStack());
             }

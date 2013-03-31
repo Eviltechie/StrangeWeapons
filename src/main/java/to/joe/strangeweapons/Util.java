@@ -41,4 +41,12 @@ public class Util {
         }
         return players.get(0);
     }
+
+    public static String toTitleCase(String string) {
+        StringBuilder titleString = new StringBuilder();
+        for (String s : string.split(" ")) {
+            titleString.append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).append(" ");
+        }
+        return titleString.substring(0, titleString.length() - 1);
+    }
 }

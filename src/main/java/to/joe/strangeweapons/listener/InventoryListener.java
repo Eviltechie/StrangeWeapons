@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import to.joe.strangeweapons.MetaParser;
 import to.joe.strangeweapons.StrangeWeapons;
+import to.joe.strangeweapons.Util;
 import to.joe.strangeweapons.meta.Crate;
 import to.joe.strangeweapons.meta.StrangePart;
 import to.joe.strangeweapons.meta.StrangeWeapon;
@@ -234,7 +235,7 @@ public class InventoryListener implements Listener {
                 if (loot.getItemMeta().hasDisplayName()) {
                     lootName = loot.getItemMeta().getDisplayName();
                 } else {
-                    lootName = ChatColor.YELLOW + StrangeWeapons.toTitleCase(loot.getType().toString().toLowerCase().replaceAll("_", " "));
+                    lootName = ChatColor.YELLOW + Util.toTitleCase(loot.getType().toString().toLowerCase().replaceAll("_", " "));
                 }
                 plugin.getServer().broadcastMessage(player.getDisplayName() + ChatColor.WHITE + " has unboxed: " + ChatColor.YELLOW + lootName);
                 //event.setResult(Result.ALLOW); //Maybe this fixes it?

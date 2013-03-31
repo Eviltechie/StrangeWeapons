@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import to.joe.strangeweapons.RandomCollection;
 import to.joe.strangeweapons.StrangeWeapons;
+import to.joe.strangeweapons.Util;
 
 public class Crate {
 
@@ -89,7 +90,7 @@ public class Crate {
                 if (i.getItemStack("item").getItemMeta().hasDisplayName()) {
                     lore.add(ChatColor.WHITE + i.getItemStack("item").getItemMeta().getDisplayName());
                 } else {
-                    lore.add(ChatColor.WHITE + StrangeWeapons.toTitleCase(i.getItemStack("item").getType().toString().toLowerCase().replaceAll("_", " ")));
+                    lore.add(ChatColor.WHITE + Util.toTitleCase(i.getItemStack("item").getType().toString().toLowerCase().replaceAll("_", " ")));
                 }
             }
         }
