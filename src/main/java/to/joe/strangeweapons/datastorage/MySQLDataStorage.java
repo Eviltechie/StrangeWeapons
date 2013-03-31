@@ -196,12 +196,12 @@ public class MySQLDataStorage implements DataStorageInterface {
     @Override
     public boolean itemCanDrop(PlayerDropData data) throws DataStorageException {
         try {
-            PreparedStatement ps = getFreshPreparedStatementColdFromTheRefrigerator("SELECT count(*) FROM droprecords WHERE username = ? AND iscrate = 0 AND DATE_SUB(NOW(), INTERVAL " + plugin.itemDropReset * 2 + " MINUTE)");
+            PreparedStatement ps = getFreshPreparedStatementColdFromTheRefrigerator("SELECT count(*) FROM droprecords WHERE username = ? AND iscrate = 0 AND DATE_SUB(NOW(), INTERVAL " + plugin.config.itemDropReset * 2 + " MINUTE)");
             ps.setString(1, data.getPlayer());
             ResultSet rs = ps.executeQuery();
             rs.next();
             int numDrops = rs.getInt(1);
-            if (numDrops < plugin.itemDropLimit) {
+            if (numDrops < plugin.config.itemDropLimit) {
                 return true;
             }
         } catch (SQLException e) {
@@ -213,12 +213,12 @@ public class MySQLDataStorage implements DataStorageInterface {
     @Override
     public boolean crateCanDrop(PlayerDropData data) throws DataStorageException {
         try {
-            PreparedStatement ps = getFreshPreparedStatementColdFromTheRefrigerator("SELECT count(*) FROM droprecords WHERE username = ? AND iscrate = 1 AND DATE_SUB(NOW(), INTERVAL " + plugin.crateDropReset * 2 + " MINUTE)");
+            PreparedStatement ps = getFreshPreparedStatementColdFromTheRefrigerator("SELECT count(*) FROM droprecords WHERE username = ? AND iscrate = 1 AND DATE_SUB(NOW(), INTERVAL " + plugin.config.crateDropReset * 2 + " MINUTE)");
             ps.setString(1, data.getPlayer());
             ResultSet rs = ps.executeQuery();
             rs.next();
             int numDrops = rs.getInt(1);
-            if (numDrops < plugin.crateDropLimit) {
+            if (numDrops < plugin.config.crateDropLimit) {
                 return true;
             }
         } catch (SQLException e) {

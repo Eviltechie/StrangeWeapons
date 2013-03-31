@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -189,11 +189,11 @@ public class YamlDataStorage implements DataStorageInterface {
             int numDrops = 0;
             Set<String> keys = section.getKeys(false);
             for (String key : keys) {
-                if (!section.getConfigurationSection(key).getBoolean("iscrate") && section.getConfigurationSection(key).getLong("time") > (new Date().getTime() / 1000) - (plugin.itemDropReset * 120)) {
+                if (!section.getConfigurationSection(key).getBoolean("iscrate") && section.getConfigurationSection(key).getLong("time") > (new Date().getTime() / 1000) - (plugin.config.itemDropReset * 120)) {
                     numDrops++;
                 }
             }
-            if (numDrops < plugin.itemDropLimit) {
+            if (numDrops < plugin.config.itemDropLimit) {
                 return true;
             }
             return false;
@@ -209,11 +209,11 @@ public class YamlDataStorage implements DataStorageInterface {
             int numDrops = 0;
             Set<String> keys = section.getKeys(false);
             for (String key : keys) {
-                if (section.getConfigurationSection(key).getBoolean("iscrate") && section.getConfigurationSection(key).getLong("time") > (new Date().getTime() / 1000) - (plugin.crateDropReset * 120)) {
+                if (section.getConfigurationSection(key).getBoolean("iscrate") && section.getConfigurationSection(key).getLong("time") > (new Date().getTime() / 1000) - (plugin.config.crateDropReset * 120)) {
                     numDrops++;
                 }
             }
-            if (numDrops < plugin.crateDropLimit) {
+            if (numDrops < plugin.config.crateDropLimit) {
                 return true;
             }
             return false;

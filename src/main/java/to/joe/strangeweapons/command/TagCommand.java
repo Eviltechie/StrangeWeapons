@@ -30,8 +30,8 @@ public class TagCommand implements CommandExecutor {
         for (String s : args) {
             sb.append(s).append(" ");
         }
-        if (sb.length() - 1 > plugin.tagLengthLimit) {
-            sender.sendMessage(ChatColor.RED + "Tags must be shorter than " + plugin.tagLengthLimit + " characters");
+        if (sb.length() - 1 > plugin.config.tagLengthLimit) {
+            sender.sendMessage(ChatColor.RED + "Tags must be shorter than " + plugin.config.tagLengthLimit + " characters");
             return true;
         }
         plugin.tags.put(sender.getName(), sb.toString().substring(0, sb.length() - 1));

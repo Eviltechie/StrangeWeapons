@@ -59,25 +59,11 @@ import to.joe.strangeweapons.meta.StrangeWeapon;
 
 public class StrangeWeapons extends JavaPlugin implements Listener {
 
-    public Map<Integer, String> weaponText = new HashMap<Integer, String>();
+    public Config config;
     public Map<String, String> tags = new HashMap<String, String>();
     private Map<String, Long> joinTimes = new HashMap<String, Long>();
     public Random random = new Random();
     private DataStorageInterface dataStorage;
-    public int tagLengthLimit;
-    public int maxParts;
-    private boolean durability;
-    private boolean dropAtFeet;
-
-    public int itemDropLimit;
-    public int itemDropReset;
-    public int itemDropRollMaxTime;
-    public int itemDropRollMinTime;
-
-    public int crateDropLimit;
-    public int crateDropReset;
-    public int crateDropRollMaxTime;
-    public int crateDropRollMinTime;
 
     @Override
     public void onEnable() {
@@ -97,16 +83,6 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
         getCommand("playtime").setExecutor(new PlaytimeCommand(this));
         getCommand("listparts").setExecutor(new ListPartsCommand());
         getServer().getPluginManager().registerEvents(this, this);
-
-        tagLengthLimit = getConfig().getInt("taglengthlimit", 50);
-        maxParts = getConfig().getInt("maxparts", 3);
-        if (maxParts != 0) {
-            maxParts++;
-        }
-
-        for (String level : getConfig().getConfigurationSection("levels").getKeys(false)) {
-            weaponText.put(Integer.parseInt(level), getConfig().getString("levels." + level));
-        }
 
         for (String s : getConfig().getStringList("idstrings")) {
             StrangeWeapon.idStrings.add(s.replace("{#}", "([0-9]+)"));
@@ -138,23 +114,12 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
             return;
         }
 
-        itemDropLimit = getConfig().getInt("dropconfig.itemDropLimit", 9);
-        itemDropReset = getConfig().getInt("dropconfig.itemDropReset", 10080);
-        itemDropRollMaxTime = getConfig().getInt("dropconfig.itemDropRollMaxTime", 70);
-        itemDropRollMinTime = getConfig().getInt("dropconfig.itemDropRollMinTime", 30);
-
-        crateDropLimit = getConfig().getInt("dropconfig.crateDropLimit", 3);
-        crateDropReset = getConfig().getInt("dropconfig.crateDropReset", 10080);
-        crateDropRollMaxTime = getConfig().getInt("dropconfig.crateDropRollMaxTime", 70);
-        crateDropRollMinTime = getConfig().getInt("dropconfig.crateDropRollMinTime", 30);
-
-        durability = getConfig().getBoolean("durability", true);
-        dropAtFeet = getConfig().getBoolean("dropitemiffull", false);
-
         Crate.plugin = this;
         StrangeWeapon.plugin = this;
         PlayerDropData.plugin = this;
         Util.plugin = this;
+
+        config = new Config(getConfig());
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             @Override
@@ -188,12 +153,12 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                                         item = new StrangeWeapon(item).clone();
                                     }
                                     Map<Integer, ItemStack> fail = player.getInventory().addItem(item); //If the player has a full inventory, we skip this drop for them or drop it at their feet
-                                    if (dropAtFeet) {
+                                    if (config.dropAtFeet) {
                                         for (ItemStack failedItem : fail.values()) {
                                             player.getWorld().dropItem(player.getLocation(), failedItem);
                                         }
                                     }
-                                    if (fail.isEmpty() || dropAtFeet) {
+                                    if (fail.isEmpty() || config.dropAtFeet) {
                                         dataStorage.recordDrop(player.getName(), item, false);
                                         String lootName;
                                         if (item.getItemMeta().hasDisplayName()) {
@@ -237,12 +202,12 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                                 Player player = getServer().getPlayerExact(time.getKey());
                                 if (player.hasPermission("strangeweapons.drop.dropcrates")) { //Make sure the player can receive crates
                                     Map<Integer, ItemStack> fail = player.getInventory().addItem(item); //If the player has a full inventory, we skip this drop for them or drop it at their feet
-                                    if (dropAtFeet) {
+                                    if (config.dropAtFeet) {
                                         for (ItemStack failedItem : fail.values()) {
                                             player.getWorld().dropItem(player.getLocation(), failedItem);
                                         }
                                     }
-                                    if (fail.isEmpty() || dropAtFeet) {
+                                    if (fail.isEmpty() || config.dropAtFeet) {
                                         dataStorage.recordDrop(player.getName(), item, true);
                                         if (player.hasPermission("strangeweapons.drop.announceexempt")) { //If the player has this perm, we don't announce their drops in case they may be vanished
                                             player.sendMessage(ChatColor.GOLD + "You" + ChatColor.WHITE + " have found: " + item.getItemMeta().getDisplayName());
@@ -296,12 +261,12 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
     }
 
     public String getWeaponName(int stat) {
-        while (!weaponText.containsKey(stat)) {
+        while (!config.weaponText.containsKey(stat)) {
             stat--;
             if (stat < 0)
                 return "Sub-par";
         }
-        return weaponText.get(stat);
+        return config.weaponText.get(stat);
     }
 
     public String getWeaponName(ItemStack item, int stat) {
@@ -359,7 +324,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
         }
         if (p != null) {
             if (p.getItemInHand().getAmount() > 0 && StrangeWeapon.isStrangeWeapon(p.getItemInHand())) {
-                if (!durability) {
+                if (!config.durability) {
                     p.getItemInHand().setDurability((short) 0);
                     p.updateInventory();
                 }
@@ -382,7 +347,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Player p = event.getPlayer();
         if (p.getItemInHand().getAmount() > 0 && StrangeWeapon.isStrangeWeapon(p.getItemInHand())) {
-            if (!durability && p.getItemInHand().getType() != Material.BOW) {
+            if (!config.durability && p.getItemInHand().getType() != Material.BOW) {
                 p.getItemInHand().setDurability((short) 0);
                 p.updateInventory();
             }
@@ -402,7 +367,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onBowFire(EntityShootBowEvent event) {
-        if (!durability && event.getEntity() instanceof Player && StrangeWeapon.isStrangeWeapon(event.getBow())) {
+        if (!config.durability && event.getEntity() instanceof Player && StrangeWeapon.isStrangeWeapon(event.getBow())) {
             event.getBow().setDurability((short) 0);
             ((Player) event.getEntity()).updateInventory();
         }
@@ -415,7 +380,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
             return;
         }
         Material mat = event.getItem().getType();
-        if (!durability && event.getAction() == Action.RIGHT_CLICK_BLOCK && (mat.equals(Material.WOOD_HOE) || mat.equals(Material.STONE_HOE) || mat.equals(Material.IRON_HOE) || mat.equals(Material.GOLD_HOE) || mat.equals(Material.DIAMOND_HOE)) && StrangeWeapon.isStrangeWeapon(event.getItem())) {
+        if (!config.durability && event.getAction() == Action.RIGHT_CLICK_BLOCK && (mat.equals(Material.WOOD_HOE) || mat.equals(Material.STONE_HOE) || mat.equals(Material.IRON_HOE) || mat.equals(Material.GOLD_HOE) || mat.equals(Material.DIAMOND_HOE)) && StrangeWeapon.isStrangeWeapon(event.getItem())) {
             event.getItem().setDurability((short) 0);
             event.getPlayer().updateInventory();
         }
@@ -436,7 +401,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onFish(PlayerFishEvent event) {
-        if (!durability && event.getPlayer().getItemInHand().getType().equals(Material.FISHING_ROD) && StrangeWeapon.isStrangeWeapon(event.getPlayer().getItemInHand())) {
+        if (!config.durability && event.getPlayer().getItemInHand().getType().equals(Material.FISHING_ROD) && StrangeWeapon.isStrangeWeapon(event.getPlayer().getItemInHand())) {
             event.getPlayer().getItemInHand().setDurability((short) 0);
             event.getPlayer().updateInventory();
         }

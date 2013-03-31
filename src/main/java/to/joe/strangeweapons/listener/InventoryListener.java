@@ -133,9 +133,9 @@ public class InventoryListener implements Listener {
                     if (numStrangeWeapons == 1 && numStrangeParts == 1 && numTotalItems == 2) {
                         StrangeWeapon weapon = new StrangeWeapon(strangeWeapon.clone());
                         StrangePart part = new StrangePart(strangePart);
-                        if (weapon.getParts().size() > plugin.maxParts) {
+                        if (weapon.getParts().size() > plugin.config.maxParts) {
                             craftingInventory.setResult(null);
-                            player.sendMessage(ChatColor.RED + "You may only have " + plugin.maxParts + " strange parts on a weapon");
+                            player.sendMessage(ChatColor.RED + "You may only have " + plugin.config.maxParts + " strange parts on a weapon");
                         } else if (weapon.getParts().containsKey(part.getPart())) {
                             craftingInventory.setResult(null);
                             player.sendMessage(ChatColor.RED + "This weapon is already tracking " + part.getPart().getName());

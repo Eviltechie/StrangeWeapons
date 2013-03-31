@@ -81,13 +81,13 @@ public class PlayerDropData implements Cloneable {
     }
 
     public int rollItem() {
-        nextItemDrop = (random.nextInt(plugin.itemDropRollMaxTime - plugin.itemDropRollMinTime) + plugin.itemDropRollMinTime) * 60 + playTime;
+        nextItemDrop = (random.nextInt(plugin.config.itemDropRollMaxTime - plugin.config.itemDropRollMinTime) + plugin.config.itemDropRollMinTime) * 60 + playTime;
         isUpdated = false;
         return nextItemDrop;
     }
 
     public int rollCrate() {
-        nextCrateDrop = (random.nextInt(plugin.crateDropRollMaxTime - plugin.crateDropRollMinTime) + plugin.crateDropRollMinTime) * 60 + playTime;
+        nextCrateDrop = (random.nextInt(plugin.config.crateDropRollMaxTime - plugin.config.crateDropRollMinTime) + plugin.config.crateDropRollMinTime) * 60 + playTime;
         isUpdated = false;
         return nextCrateDrop;
     }
