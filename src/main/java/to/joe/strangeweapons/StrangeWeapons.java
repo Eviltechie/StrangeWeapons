@@ -14,23 +14,10 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.PoweredMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
@@ -134,19 +121,6 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
         }
     }
 
-    public String getWeaponName(int stat) {
-        while (!config.weaponText.containsKey(stat)) {
-            stat--;
-            if (stat < 0)
-                return "Sub-par";
-        }
-        return config.weaponText.get(stat);
-    }
-
-    public String getWeaponName(ItemStack item, int stat) {
-        return getWeaponName(stat) + " " + Util.toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " "));
-    }
-
     public DataStorageInterface getDSI() {
         return dataStorage;
     }
@@ -165,156 +139,6 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
             joinTimes.remove(event.getPlayer().getName());
         } catch (DataStorageException e) {
             getLogger().log(Level.SEVERE, "Error saving playtime on leave", e);
-        }
-    }
-
-    @EventHandler
-    public void onDeath(PlayerDeathEvent event) {
-        if (event.getEntity().getKiller() != null) {
-            Player p = event.getEntity().getKiller();
-            if (p.getItemInHand().getAmount() > 0 && StrangeWeapon.isStrangeWeapon(p.getItemInHand())) {
-                StrangeWeapon item = new StrangeWeapon(p.getItemInHand());
-                Entry<Part, Integer> oldPrimary = item.getPrimary();
-                String oldName = getWeaponName(p.getItemInHand(), (int) (oldPrimary.getValue() * oldPrimary.getKey().getMultiplier()));
-                item.incrementStat(Part.PLAYER_KILLS, 1);
-                Entry<Part, Integer> newPrimary = item.getPrimary();
-                String newName = getWeaponName(p.getItemInHand(), (int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier()));
-                if (!oldName.equals(newName)) {
-                    getServer().broadcastMessage(p.getDisplayName() + "'s " + Util.toTitleCase(p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ")) + ChatColor.WHITE + " has reached a new rank: " + ChatColor.GOLD + getWeaponName((int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier())));
-                }
-                p.setItemInHand(item.getItemStack());
-            }
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onDamage(EntityDamageByEntityEvent event) {
-        Player p = null;
-        if (event.getDamager() instanceof Player) {
-            p = (Player) event.getDamager();
-        } else if (event.getDamager() instanceof Arrow && ((Arrow) event.getDamager()).getShooter() instanceof Player) {
-            p = (Player) ((Arrow) event.getDamager()).getShooter();
-        }
-        if (p != null) {
-            if (p.getItemInHand().getAmount() > 0 && StrangeWeapon.isStrangeWeapon(p.getItemInHand())) {
-                if (!config.durability) {
-                    p.getItemInHand().setDurability((short) 0);
-                    p.updateInventory();
-                }
-                StrangeWeapon item = new StrangeWeapon(p.getItemInHand());
-                Entry<Part, Integer> oldPrimary = item.getPrimary();
-                String oldName = getWeaponName(p.getItemInHand(), (int) (oldPrimary.getValue() * oldPrimary.getKey().getMultiplier()));
-                item.incrementStat(Part.DAMAGE, event.getDamage());
-                Entry<Part, Integer> newPrimary = item.getPrimary();
-                String newName = getWeaponName(p.getItemInHand(), (int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier()));
-                if (!oldName.equals(newName)) {
-                    getServer().broadcastMessage(p.getDisplayName() + "'s " + Util.toTitleCase(p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ")) + ChatColor.WHITE + " has reached a new rank: " + getWeaponName((int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier())));
-                }
-                p.setItemInHand(item.getItemStack());
-            }
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
-        Player p = event.getPlayer();
-        if (p.getItemInHand().getAmount() > 0 && StrangeWeapon.isStrangeWeapon(p.getItemInHand())) {
-            if (!config.durability && p.getItemInHand().getType() != Material.BOW) {
-                p.getItemInHand().setDurability((short) 0);
-                p.updateInventory();
-            }
-            StrangeWeapon item = new StrangeWeapon(p.getItemInHand());
-            Entry<Part, Integer> oldPrimary = item.getPrimary();
-            String oldName = getWeaponName(p.getItemInHand(), (int) (oldPrimary.getValue() * oldPrimary.getKey().getMultiplier()));
-            item.incrementStat(Part.BLOCKS_BROKEN, 1);
-            Entry<Part, Integer> newPrimary = item.getPrimary();
-            String newName = getWeaponName(p.getItemInHand(), (int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier()));
-            if (!oldName.equals(newName)) {
-                getServer().broadcastMessage(p.getDisplayName() + "'s " + Util.toTitleCase(p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ")) + ChatColor.WHITE + " has reached a new rank: " + getWeaponName((int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier())));
-            }
-            p.setItemInHand(item.getItemStack());
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onBowFire(EntityShootBowEvent event) {
-        if (!config.durability && event.getEntity() instanceof Player && StrangeWeapon.isStrangeWeapon(event.getBow())) {
-            event.getBow().setDurability((short) 0);
-            ((Player) event.getEntity()).updateInventory();
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onInteract(PlayerInteractEvent event) {
-        if (event.getItem() == null) {
-            return;
-        }
-        Material mat = event.getItem().getType();
-        if (!config.durability && event.getAction() == Action.RIGHT_CLICK_BLOCK && (mat.equals(Material.WOOD_HOE) || mat.equals(Material.STONE_HOE) || mat.equals(Material.IRON_HOE) || mat.equals(Material.GOLD_HOE) || mat.equals(Material.DIAMOND_HOE)) && StrangeWeapon.isStrangeWeapon(event.getItem())) {
-            event.getItem().setDurability((short) 0);
-            event.getPlayer().updateInventory();
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onInteract(PlayerInteractEntityEvent event) {
-        Player p = event.getPlayer();
-        ItemStack item = event.getPlayer().getItemInHand();
-        if (event.getRightClicked() instanceof PoweredMinecart && item.getType() == Material.COAL && StrangeWeapon.isStrangeWeapon(p.getItemInHand())) {
-            event.setCancelled(true);
-            p.updateInventory();
-            p.sendMessage(ChatColor.RED + "You may not use that in a powered minecart.");
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onFish(PlayerFishEvent event) {
-        if (!config.durability && event.getPlayer().getItemInHand().getType().equals(Material.FISHING_ROD) && StrangeWeapon.isStrangeWeapon(event.getPlayer().getItemInHand())) {
-            event.getPlayer().getItemInHand().setDurability((short) 0);
-            event.getPlayer().updateInventory();
-        }
-    }
-
-    @EventHandler
-    public void onEntityDeath(EntityDeathEvent event) {
-        if (event.getEntity().getKiller() != null) {
-            Player p = event.getEntity().getKiller();
-            if (p.getItemInHand().getAmount() > 0 && StrangeWeapon.isStrangeWeapon(p.getItemInHand())) {
-                StrangeWeapon item = new StrangeWeapon(p.getItemInHand());
-                Entry<Part, Integer> oldPrimary = item.getPrimary();
-                String oldName = getWeaponName(p.getItemInHand(), (int) (oldPrimary.getValue() * oldPrimary.getKey().getMultiplier()));
-                Part thisKill;
-                try {
-                    thisKill = Part.valueOf(event.getEntityType().name());
-                } catch (IllegalArgumentException e) {
-                    return;
-                }
-                item.incrementStat(thisKill, 1);
-                item.incrementStat(Part.MOB_KILLS, 1);
-                Entry<Part, Integer> newPrimary = item.getPrimary();
-                String newName = getWeaponName(p.getItemInHand(), (int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier()));
-                if (!oldName.equals(newName)) {
-                    getServer().broadcastMessage(p.getDisplayName() + "'s " + Util.toTitleCase(p.getItemInHand().getType().toString().toLowerCase().replaceAll("_", " ")) + ChatColor.WHITE + " has reached a new rank: " + getWeaponName((int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier())));
-                }
-                p.setItemInHand(item.getItemStack());
-            }
-        }
-    }
-
-    @EventHandler
-    public void onBlockPlace(BlockPlaceEvent event) {
-        if (Crate.isCrate(event.getItemInHand())) {
-            event.setCancelled(true);
-            event.getPlayer().sendMessage(ChatColor.RED + "You may not place Steve Co. Supply Crates");
-        } else if (event.getItemInHand().getType().isBlock() && StrangeWeapon.isStrangeWeapon(event.getItemInHand())) {
-            event.setCancelled(true);
-            event.getPlayer().sendMessage(ChatColor.RED + "You may not place strange weapons");
         }
     }
 }

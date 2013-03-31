@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import to.joe.strangeweapons.exception.BadPlayerMatchException;
 
@@ -48,5 +49,18 @@ public class Util {
             titleString.append(Character.toUpperCase(s.charAt(0))).append(s.substring(1)).append(" ");
         }
         return titleString.substring(0, titleString.length() - 1);
+    }
+
+    public static String getWeaponName(int stat) {
+        while (!plugin.config.weaponText.containsKey(stat)) {
+            stat--;
+            if (stat < 0)
+                return "Sub-par";
+        }
+        return plugin.config.weaponText.get(stat);
+    }
+
+    public static String getWeaponName(ItemStack item, int stat) {
+        return getWeaponName(stat) + " " + Util.toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " "));
     }
 }

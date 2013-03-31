@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import to.joe.strangeweapons.Part;
 import to.joe.strangeweapons.Quality;
 import to.joe.strangeweapons.StrangeWeapons;
+import to.joe.strangeweapons.Util;
 import to.joe.strangeweapons.datastorage.DataStorageException;
 import to.joe.strangeweapons.datastorage.WeaponData;
 
@@ -82,9 +83,9 @@ public class StrangeWeapon {
         List<String> lore = new ArrayList<String>();
         if (hasCustomName()) {
             meta.setDisplayName(getQuality().getPrefix() + ChatColor.ITALIC + getCustomName());
-            lore.add(ChatColor.WHITE + plugin.getWeaponName(item, getPrimary().getValue()));
+            lore.add(ChatColor.WHITE + Util.getWeaponName(item, getPrimary().getValue()));
         } else {
-            meta.setDisplayName(getQuality().getPrefix() + plugin.getWeaponName(item, (int) (getPrimary().getValue() * getPrimary().getKey().getMultiplier())));
+            meta.setDisplayName(getQuality().getPrefix() + Util.getWeaponName(item, (int) (getPrimary().getValue() * getPrimary().getKey().getMultiplier())));
         }
         if (hasDescription()) {
             lore.add(ChatColor.WHITE + "" + ChatColor.ITALIC + "Description: " + data.getDescription());
