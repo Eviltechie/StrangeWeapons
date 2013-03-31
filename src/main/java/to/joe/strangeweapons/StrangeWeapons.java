@@ -61,7 +61,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
 
     public Config config;
     public Map<String, String> tags = new HashMap<String, String>();
-    private Map<String, Long> joinTimes = new HashMap<String, Long>();
+    Map<String, Long> joinTimes = new HashMap<String, Long>();
     public Random random = new Random();
     private DataStorageInterface dataStorage;
 
@@ -121,125 +121,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
 
         config = new Config(getConfig());
 
-        getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-            @Override
-            public void run() {
-                for (Entry<String, Long> time : joinTimes.entrySet()) {
-                    try {
-                        PlayerDropData data = dataStorage.getPlayerDropData(time.getKey());
-                        data.setPlayTime(data.getPlayTime() + (int) ((System.currentTimeMillis() - time.getValue()) / 1000));
-                        if (data.getPlayTime() >= data.getNextItemDrop() && dataStorage.itemCanDrop(data)) {
-                            Map<ItemStack, Double> map = new HashMap<ItemStack, Double>();
-                            if (getConfig().contains("drops")) {
-                                ConfigurationSection cs = getConfig().getConfigurationSection("drops");
-                                for (String item : cs.getKeys(false)) {
-                                    ConfigurationSection i = cs.getConfigurationSection(item);
-                                    map.put(i.getItemStack("item"), i.getDouble("weight"));
-                                }
-                            }
-
-                            RandomCollection<ItemStack> rc = new RandomCollection<ItemStack>(random);
-                            for (Entry<ItemStack, Double> i : map.entrySet()) {
-                                rc.add(i.getValue(), i.getKey());
-                            }
-
-                            if (map.isEmpty()) {
-                                getLogger().warning("There are no items that can be dropped!");
-                            } else {
-                                Player player = getServer().getPlayerExact(time.getKey());
-                                if (player.hasPermission("strangeweapons.drop.dropitems")) { //Make sure they can receive items
-                                    ItemStack item = rc.next();
-                                    if (StrangeWeapon.isStrangeWeapon(item)) {
-                                        item = new StrangeWeapon(item).clone();
-                                    }
-                                    Map<Integer, ItemStack> fail = player.getInventory().addItem(item); //If the player has a full inventory, we skip this drop for them or drop it at their feet
-                                    if (config.dropAtFeet) {
-                                        for (ItemStack failedItem : fail.values()) {
-                                            player.getWorld().dropItem(player.getLocation(), failedItem);
-                                        }
-                                    }
-                                    if (fail.isEmpty() || config.dropAtFeet) {
-                                        dataStorage.recordDrop(player.getName(), item, false);
-                                        String lootName;
-                                        if (item.getItemMeta().hasDisplayName()) {
-                                            lootName = item.getItemMeta().getDisplayName();
-                                        } else {
-                                            lootName = ChatColor.YELLOW + Util.toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " "));
-                                        }
-                                        if (player.hasPermission("strangeweapons.drop.announceexempt")) { //If the player has this perm, we don't announce their drops in case they may be vanished
-                                            player.sendMessage(ChatColor.GOLD + "You" + ChatColor.WHITE + " have found: " + ChatColor.YELLOW + lootName);
-                                        } else {
-                                            getServer().broadcastMessage(player.getDisplayName() + ChatColor.WHITE + " has found: " + ChatColor.YELLOW + lootName);
-                                        }
-                                    } else {
-                                        player.sendMessage(ChatColor.GOLD + "TIP: " + ChatColor.AQUA + "Make sure you have at least one empty spot in your inventory to receive random drops!");
-                                    }
-                                }
-                            }
-
-                            data.rollItem();
-                        }
-                        if (data.getPlayTime() >= data.getNextCrateDrop() && dataStorage.crateCanDrop(data)) {
-                            Set<String> allCrates;
-                            if (getConfig().contains("crates")) {
-                                allCrates = getConfig().getConfigurationSection("crates").getKeys(false);
-                            } else {
-                                allCrates = new HashSet<String>();
-                            }
-                            Iterator<String> i = allCrates.iterator();
-                            while (i.hasNext()) {
-                                String crate = i.next();
-                                if (!getConfig().getBoolean("crates." + crate + ".drops")) {
-                                    i.remove();
-                                }
-                            }
-                            if (allCrates.isEmpty()) {
-                                getLogger().warning("There are no crates that can be dropped!");
-                            } else {
-                                ArrayList<String> crates = new ArrayList<String>(allCrates);
-                                Collections.shuffle(crates);
-                                ItemStack item = new Crate(Integer.parseInt(crates.get(0))).getItemStack();
-                                Player player = getServer().getPlayerExact(time.getKey());
-                                if (player.hasPermission("strangeweapons.drop.dropcrates")) { //Make sure the player can receive crates
-                                    Map<Integer, ItemStack> fail = player.getInventory().addItem(item); //If the player has a full inventory, we skip this drop for them or drop it at their feet
-                                    if (config.dropAtFeet) {
-                                        for (ItemStack failedItem : fail.values()) {
-                                            player.getWorld().dropItem(player.getLocation(), failedItem);
-                                        }
-                                    }
-                                    if (fail.isEmpty() || config.dropAtFeet) {
-                                        dataStorage.recordDrop(player.getName(), item, true);
-                                        if (player.hasPermission("strangeweapons.drop.announceexempt")) { //If the player has this perm, we don't announce their drops in case they may be vanished
-                                            player.sendMessage(ChatColor.GOLD + "You" + ChatColor.WHITE + " have found: " + item.getItemMeta().getDisplayName());
-                                        } else {
-                                            getServer().broadcastMessage(player.getDisplayName() + ChatColor.WHITE + " has found: " + item.getItemMeta().getDisplayName());
-                                        }
-                                    } else {
-                                        player.sendMessage(ChatColor.GOLD + "TIP: " + ChatColor.AQUA + "Make sure you have at least one empty spot in your inventory to receive random drops!");
-                                    }
-                                }
-                            }
-                            data.rollCrate();
-                        }
-                        dataStorage.updatePlayerDropData(data);
-                    } catch (DataStorageException e) {
-                        getLogger().log(Level.SEVERE, "Error reading/saving data for " + time.getKey(), e);
-                    }
-                }
-                long currentTime = System.currentTimeMillis();
-                ArrayList<String> onlinePlayers = new ArrayList<String>();
-                for (Player p : getServer().getOnlinePlayers()) {
-                    onlinePlayers.add(p.getName());
-                }
-                for (String player : joinTimes.keySet()) {
-                    if (onlinePlayers.contains(player)) {
-                        joinTimes.put(player, currentTime);
-                    } else {
-                        joinTimes.remove(player);
-                    }
-                }
-            }
-        }, 600, 1200);
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, new PlaytimeRecorder(this), 600, 1200);
     }
 
     @Override
@@ -433,6 +315,133 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
         } else if (event.getItemInHand().getType().isBlock() && StrangeWeapon.isStrangeWeapon(event.getItemInHand())) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "You may not place strange weapons");
+        }
+    }
+}
+
+class PlaytimeRecorder implements Runnable {
+
+    StrangeWeapons plugin;
+
+    public PlaytimeRecorder(StrangeWeapons plugin) {
+        this.plugin = plugin;
+    }
+
+    @Override
+    public void run() {
+        for (Entry<String, Long> time : plugin.joinTimes.entrySet()) {
+            try {
+                PlayerDropData data = plugin.getDSI().getPlayerDropData(time.getKey());
+                data.setPlayTime(data.getPlayTime() + (int) ((System.currentTimeMillis() - time.getValue()) / 1000));
+                if (data.getPlayTime() >= data.getNextItemDrop() && plugin.getDSI().itemCanDrop(data)) {
+                    Map<ItemStack, Double> map = new HashMap<ItemStack, Double>();
+                    if (plugin.getConfig().contains("drops")) {
+                        ConfigurationSection cs = plugin.getConfig().getConfigurationSection("drops");
+                        for (String item : cs.getKeys(false)) {
+                            ConfigurationSection i = cs.getConfigurationSection(item);
+                            map.put(i.getItemStack("item"), i.getDouble("weight"));
+                        }
+                    }
+
+                    RandomCollection<ItemStack> rc = new RandomCollection<ItemStack>(plugin.random);
+                    for (Entry<ItemStack, Double> i : map.entrySet()) {
+                        rc.add(i.getValue(), i.getKey());
+                    }
+
+                    if (map.isEmpty()) {
+                        plugin.getLogger().warning("There are no items that can be dropped!");
+                    } else {
+                        Player player = plugin.getServer().getPlayerExact(time.getKey());
+                        if (player.hasPermission("strangeweapons.drop.dropitems")) { //Make sure they can receive items
+                            ItemStack item = rc.next();
+                            if (StrangeWeapon.isStrangeWeapon(item)) {
+                                item = new StrangeWeapon(item).clone();
+                            }
+                            Map<Integer, ItemStack> fail = player.getInventory().addItem(item); //If the player has a full inventory, we skip this drop for them or drop it at their feet
+                            if (plugin.config.dropAtFeet) {
+                                for (ItemStack failedItem : fail.values()) {
+                                    player.getWorld().dropItem(player.getLocation(), failedItem);
+                                }
+                            }
+                            if (fail.isEmpty() || plugin.config.dropAtFeet) {
+                                plugin.getDSI().recordDrop(player.getName(), item, false);
+                                String lootName;
+                                if (item.getItemMeta().hasDisplayName()) {
+                                    lootName = item.getItemMeta().getDisplayName();
+                                } else {
+                                    lootName = ChatColor.YELLOW + Util.toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " "));
+                                }
+                                if (player.hasPermission("strangeweapons.drop.announceexempt")) { //If the player has this perm, we don't announce their drops in case they may be vanished
+                                    player.sendMessage(ChatColor.GOLD + "You" + ChatColor.WHITE + " have found: " + ChatColor.YELLOW + lootName);
+                                } else {
+                                    plugin.getServer().broadcastMessage(player.getDisplayName() + ChatColor.WHITE + " has found: " + ChatColor.YELLOW + lootName);
+                                }
+                            } else {
+                                player.sendMessage(ChatColor.GOLD + "TIP: " + ChatColor.AQUA + "Make sure you have at least one empty spot in your inventory to receive random drops!");
+                            }
+                        }
+                    }
+
+                    data.rollItem();
+                }
+                if (data.getPlayTime() >= data.getNextCrateDrop() && plugin.getDSI().crateCanDrop(data)) {
+                    Set<String> allCrates;
+                    if (plugin.getConfig().contains("crates")) {
+                        allCrates = plugin.getConfig().getConfigurationSection("crates").getKeys(false);
+                    } else {
+                        allCrates = new HashSet<String>();
+                    }
+                    Iterator<String> i = allCrates.iterator();
+                    while (i.hasNext()) {
+                        String crate = i.next();
+                        if (!plugin.getConfig().getBoolean("crates." + crate + ".drops")) {
+                            i.remove();
+                        }
+                    }
+                    if (allCrates.isEmpty()) {
+                        plugin.getLogger().warning("There are no crates that can be dropped!");
+                    } else {
+                        ArrayList<String> crates = new ArrayList<String>(allCrates);
+                        Collections.shuffle(crates);
+                        ItemStack item = new Crate(Integer.parseInt(crates.get(0))).getItemStack();
+                        Player player = plugin.getServer().getPlayerExact(time.getKey());
+                        if (player.hasPermission("strangeweapons.drop.dropcrates")) { //Make sure the player can receive crates
+                            Map<Integer, ItemStack> fail = player.getInventory().addItem(item); //If the player has a full inventory, we skip this drop for them or drop it at their feet
+                            if (plugin.config.dropAtFeet) {
+                                for (ItemStack failedItem : fail.values()) {
+                                    player.getWorld().dropItem(player.getLocation(), failedItem);
+                                }
+                            }
+                            if (fail.isEmpty() || plugin.config.dropAtFeet) {
+                                plugin.getDSI().recordDrop(player.getName(), item, true);
+                                if (player.hasPermission("strangeweapons.drop.announceexempt")) { //If the player has this perm, we don't announce their drops in case they may be vanished
+                                    player.sendMessage(ChatColor.GOLD + "You" + ChatColor.WHITE + " have found: " + item.getItemMeta().getDisplayName());
+                                } else {
+                                    plugin.getServer().broadcastMessage(player.getDisplayName() + ChatColor.WHITE + " has found: " + item.getItemMeta().getDisplayName());
+                                }
+                            } else {
+                                player.sendMessage(ChatColor.GOLD + "TIP: " + ChatColor.AQUA + "Make sure you have at least one empty spot in your inventory to receive random drops!");
+                            }
+                        }
+                    }
+                    data.rollCrate();
+                }
+                plugin.getDSI().updatePlayerDropData(data);
+            } catch (DataStorageException e) {
+                plugin.getLogger().log(Level.SEVERE, "Error reading/saving data for " + time.getKey(), e);
+            }
+        }
+        long currentTime = System.currentTimeMillis();
+        ArrayList<String> onlinePlayers = new ArrayList<String>();
+        for (Player p : plugin.getServer().getOnlinePlayers()) {
+            onlinePlayers.add(p.getName());
+        }
+        for (String player : plugin.joinTimes.keySet()) {
+            if (onlinePlayers.contains(player)) {
+                plugin.joinTimes.put(player, currentTime);
+            } else {
+                plugin.joinTimes.remove(player);
+            }
         }
     }
 }
