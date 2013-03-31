@@ -27,12 +27,14 @@ import to.joe.strangeweapons.command.ContentsCommand;
 import to.joe.strangeweapons.command.CratesCommand;
 import to.joe.strangeweapons.command.DropsCommand;
 import to.joe.strangeweapons.command.ListPartsCommand;
+import to.joe.strangeweapons.command.ListQualitiesCommand;
 import to.joe.strangeweapons.command.NewCrateCommand;
 import to.joe.strangeweapons.command.NewDescriptionTagCommand;
 import to.joe.strangeweapons.command.NewKeyCommand;
 import to.joe.strangeweapons.command.NewNameTagCommand;
 import to.joe.strangeweapons.command.NewPartCommand;
 import to.joe.strangeweapons.command.PlaytimeCommand;
+import to.joe.strangeweapons.command.SpawnStrangeCommand;
 import to.joe.strangeweapons.command.StrangeCommand;
 import to.joe.strangeweapons.command.TagCommand;
 import to.joe.strangeweapons.datastorage.Cache;
@@ -46,12 +48,12 @@ import to.joe.strangeweapons.listener.IncrementListener;
 import to.joe.strangeweapons.meta.Crate;
 import to.joe.strangeweapons.meta.StrangeWeapon;
 
-public class StrangeWeapons extends JavaPlugin implements Listener {
+public class StrangeWeapons extends JavaPlugin implements Listener { //TODO Setquality
 
     public Config config;
-    public Map<String, String> tags = new HashMap<String, String>();
-    Map<String, Long> joinTimes = new HashMap<String, Long>();
-    public Random random = new Random();
+    public final Map<String, String> tags = new HashMap<String, String>();
+    final Map<String, Long> joinTimes = new HashMap<String, Long>();
+    public final Random random = new Random();
     private DataStorageInterface dataStorage;
 
     @Override
@@ -71,6 +73,8 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
         getCommand("drops").setExecutor(new DropsCommand(this));
         getCommand("playtime").setExecutor(new PlaytimeCommand(this));
         getCommand("listparts").setExecutor(new ListPartsCommand());
+        getCommand("spawnstrange").setExecutor(new SpawnStrangeCommand());
+        getCommand("listqualities").setExecutor(new ListQualitiesCommand());
         getServer().getPluginManager().registerEvents(this, this);
 
         for (String s : getConfig().getStringList("idstrings")) {

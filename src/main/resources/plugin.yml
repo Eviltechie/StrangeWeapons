@@ -62,10 +62,20 @@ commands:
     permission-message: You may not view playtimes
     usage: /playtime [name]
   listparts:
-    description: Shows the available strange parts
+    description: Show the available parts for strange parts
     permission: strangeweapons.command.listparts
     permission-message: You may not list strange parts
     usage: /listparts
+  spawnstrange:
+    description: Spawn a strange weapon
+    permission: strangeweapons.command.spawnstrange
+    permission-message: You may not spawn strange weapons
+    usage: /spawnstrange [quality] <"name" <"description">> [id<:damage>] ["part..."] <player>
+  listqualities:
+    description: Show the available qualities for strange weapons
+    permission: strangeweapons.command.listqualities
+    permission-message: You may not list weapon qualities
+    usage: /listqualities
 permissions:
   strangeweapons.command.strange:
     description: Turn an item into a strange item
@@ -96,6 +106,10 @@ permissions:
     description: View playtime
   strangeweapons.command.listparts:
     description: List strange parts
+  strangeweapons.command.spawnstrange:
+    description: Spawn strange weapons
+  strangeweapons.command.listqualities:
+    description: List weapon qualities
   strangeweapons.drop.announceexempt:
     description: Does not announce publicly when this player gets a drop, in case they may be vanished
   strangeweapons.drop.dropcrates:
@@ -122,3 +136,5 @@ permissions:
       strangeweapons.drop.announceexempt: true
       strangeweapons.drop.dropcrates: true
       strangeweapons.drop.dropitems: true
+      strangeweapons.command.spawnstrange: true
+      strangeweapons.command.listqualities: true
