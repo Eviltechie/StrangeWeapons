@@ -34,16 +34,6 @@ public class InventoryListener implements Listener {
         final Player player = (Player) event.getWhoClicked();
         if (event.getInventory().getType() == InventoryType.BREWING) {
             ItemStack item = event.getCursor();
-            /*
-             * 2013-03-31 21:52:50 [SEVERE] 3
-            2013-03-31 21:52:50 [SEVERE] FUEL
-            2013-03-31 21:52:52 [SEVERE] 0
-            2013-03-31 21:52:52 [SEVERE] CRAFTING
-            2013-03-31 21:52:53 [SEVERE] 1
-            2013-03-31 21:52:53 [SEVERE] CRAFTING
-            2013-03-31 21:52:55 [SEVERE] 2
-            2013-03-31 21:52:55 [SEVERE] CRAFTING
-             */
             if (((event.getSlot() == 3 && event.getSlotType() == SlotType.FUEL) || (event.getSlotType() == SlotType.CRAFTING && (event.getSlot() == 0 || event.getSlot() == 1 || event.getSlot() == 2))) && (StrangeWeapon.isStrangeWeapon(item) || Crate.isCrate(item) || MetaParser.isKey(item) || StrangePart.isPart(item) || MetaParser.isNameTag(item) || MetaParser.isDescriptionTag(item))) {
                 event.setCancelled(true);
                 plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {

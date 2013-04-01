@@ -111,18 +111,22 @@ public class SpawnStrangeCommand implements CommandExecutor {
         position++;
 
         if (combinedArgs.size() > position) {
-            String[] split = combinedArgs.get(position).substring(1, combinedArgs.get(position).length() - 1).split(" ");
-            for (String part : split) {
-                try {
-                    parts.put(Part.valueOf(part), 0);
-                } catch (IllegalArgumentException e) {
-                    sender.sendMessage(ChatColor.RED + "Invalid part");
+            if (combinedArgs.get(position).equals("\"\"")) {
+                if (quality == Quality.STRANGE) {
+                    sender.sendMessage(ChatColor.RED + "Specify at least one strange part to add");
                     return true;
                 }
+            } else {
+                String[] split = combinedArgs.get(position).substring(1, combinedArgs.get(position).length() - 1).split(" ");
+                for (String part : split) {
+                    try {
+                        parts.put(Part.valueOf(part), 0);
+                    } catch (IllegalArgumentException e) {
+                        sender.sendMessage(ChatColor.RED + "Invalid part");
+                        return true;
+                    }
+                }
             }
-        } else {
-            sender.sendMessage(ChatColor.RED + "Specify at least one strange part to add");
-            return true;
         }
 
         position++;
@@ -143,8 +147,7 @@ public class SpawnStrangeCommand implements CommandExecutor {
             }
         }
 
-        StrangeWeapon strange = new StrangeWeapon(item, Part.DAMAGE);
-        strange.setQuality(quality);
+        StrangeWeapon strange = new StrangeWeapon(item, quality, Part.DAMAGE);
         if (name != null) {
             strange.setCustomName(name);
         }

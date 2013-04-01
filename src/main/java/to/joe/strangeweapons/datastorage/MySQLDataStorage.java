@@ -93,14 +93,16 @@ public class MySQLDataStorage implements DataStorageInterface {
         ps.setInt(1, weaponID);
         ps.execute();
 
-        int position = 0;
-        for (Entry<Part, Integer> part : parts.entrySet()) {
-            ps = getFreshPreparedStatementColdFromTheRefrigerator("INSERT INTO parts (weaponid, part, stat, partorder) VALUES (?,?,?,?)");
-            ps.setInt(1, weaponID);
-            ps.setString(2, part.getKey().toString());
-            ps.setInt(3, part.getValue());
-            ps.setInt(4, position++);
-            ps.execute();
+        if (parts != null) {
+            int position = 0;
+            for (Entry<Part, Integer> part : parts.entrySet()) {
+                ps = getFreshPreparedStatementColdFromTheRefrigerator("INSERT INTO parts (weaponid, part, stat, partorder) VALUES (?,?,?,?)");
+                ps.setInt(1, weaponID);
+                ps.setString(2, part.getKey().toString());
+                ps.setInt(3, part.getValue());
+                ps.setInt(4, position++);
+                ps.execute();
+            }
         }
     }
 

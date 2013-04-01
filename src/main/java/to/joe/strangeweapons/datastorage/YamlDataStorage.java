@@ -105,8 +105,10 @@ public class YamlDataStorage implements DataStorageInterface {
             section.set("description", data.getDescription());
         }
         List<String> rawParts = new ArrayList<String>();
-        for (Entry<Part, Integer> part : data.getParts().entrySet()) {
-            rawParts.add(part.getKey() + "," + part.getValue());
+        if (data.getParts() != null) {
+            for (Entry<Part, Integer> part : data.getParts().entrySet()) {
+                rawParts.add(part.getKey() + "," + part.getValue());
+            }
         }
         section.set("parts", rawParts);
         data.setWeaponId(newId);
@@ -128,8 +130,10 @@ public class YamlDataStorage implements DataStorageInterface {
             section.set("description", data.getDescription());
         }
         List<String> rawParts = new ArrayList<String>();
-        for (Entry<Part, Integer> part : data.getParts().entrySet()) {
-            rawParts.add(part.getKey() + "," + part.getValue());
+        if (data.getParts() != null) {
+            for (Entry<Part, Integer> part : data.getParts().entrySet()) {
+                rawParts.add(part.getKey() + "," + part.getValue());
+            }
         }
         section.set("parts", rawParts);
     }

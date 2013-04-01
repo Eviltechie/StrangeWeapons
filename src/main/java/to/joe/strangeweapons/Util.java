@@ -60,7 +60,11 @@ public class Util {
         return plugin.config.weaponText.get(stat);
     }
 
-    public static String getWeaponName(ItemStack item, int stat) {
-        return getWeaponName(stat) + " " + Util.toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " "));
+    public static String getWeaponName(ItemStack item, int stat, Quality quality) {
+        if (quality == Quality.STRANGE) {
+            return getWeaponName(stat) + " " + Util.toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " "));
+        } else {
+            return Util.toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " "));
+        }
     }
 }

@@ -36,10 +36,18 @@ public class SetQualityCommand implements CommandExecutor {
 
         if (StrangeWeapon.isStrangeWeapon(item)) {
             StrangeWeapon strange = new StrangeWeapon(item);
+            if (quality == Quality.STRANGE && strange.getParts().size() == 0) {
+                sender.sendMessage(ChatColor.RED + "This weapon must have at least one part if I am to make it strange");
+                return true;
+            }
             strange.setQuality(quality);
             player.setItemInHand(strange.getItemStack());
         } else {
-            sender.sendMessage(ChatColor.RED + "That isn't a strange weapon");
+            if (quality != Quality.STRANGE) {
+                player.setItemInHand(new StrangeWeapon(item, quality, null).getItemStack());
+            } else {
+                sender.sendMessage(ChatColor.RED + " I cannot make a strange weapon with this command. Use /strange instead");
+            }
         }
         return true;
     }

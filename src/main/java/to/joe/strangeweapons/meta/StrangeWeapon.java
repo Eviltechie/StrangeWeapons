@@ -66,14 +66,16 @@ public class StrangeWeapon {
         }
     }
 
-    public StrangeWeapon(ItemStack item, Part part) {
+    public StrangeWeapon(ItemStack item, Quality quality, Part part) {
         data = new WeaponData();
         this.item = item;
         meta = item.getItemMeta();
-        LinkedHashMap<Part, Integer> firstPart = new LinkedHashMap<Part, Integer>();
-        firstPart.put(part, 0);
-        data.setQuality(Quality.STRANGE);
-        setParts(firstPart);
+        if (part != null) {
+            LinkedHashMap<Part, Integer> firstPart = new LinkedHashMap<Part, Integer>();
+            firstPart.put(part, 0);
+            setParts(firstPart);
+        }
+        data.setQuality(quality);
         try {
             data = plugin.getDSI().saveNewWeaponData(data);
         } catch (DataStorageException e) {
@@ -85,15 +87,23 @@ public class StrangeWeapon {
         List<String> lore = new ArrayList<String>();
         if (hasCustomName()) {
             meta.setDisplayName(getQuality().getPrefix() + ChatColor.ITALIC + getCustomName());
-            lore.add(ChatColor.WHITE + Util.getWeaponName(item, getPrimary().getValue()));
+            if (getPrimary() != null) {
+                lore.add(ChatColor.WHITE + Util.getWeaponName(item, getPrimary().getValue(), getQuality()));
+            }
         } else {
-            meta.setDisplayName(getQuality().getPrefix() + Util.getWeaponName(item, (int) (getPrimary().getValue() * getPrimary().getKey().getMultiplier())));
+            if (getPrimary() != null) {
+                meta.setDisplayName(getQuality().getPrefix() + Util.getWeaponName(item, (int) (getPrimary().getValue() * getPrimary().getKey().getMultiplier()), getQuality()));
+            } else {
+                meta.setDisplayName(getQuality().getPrefix() + Util.getWeaponName(item, 0, getQuality()));
+            }
         }
         if (hasDescription()) {
             lore.add(ChatColor.GOLD + "" + ChatColor.ITALIC + "Description: " + ChatColor.WHITE + data.getDescription());
         }
-        for (Entry<Part, Integer> p : getParts().entrySet()) {
-            lore.add(ChatColor.WHITE + p.getKey().getName() + ": " + p.getValue());
+        if (getParts() != null) {
+            for (Entry<Part, Integer> p : getParts().entrySet()) {
+                lore.add(ChatColor.WHITE + p.getKey().getName() + ": " + p.getValue());
+            }
         }
         lore.add(ChatColor.WHITE + idStrings.get(0).replace("([0-9]+)", data.getWeaponId() + ""));
         meta.setLore(lore);
@@ -122,8 +132,10 @@ public class StrangeWeapon {
     }
 
     public Entry<Part, Integer> getPrimary() {
-        for (Entry<Part, Integer> p : getParts().entrySet()) {
-            return p;
+        if (getParts() != null) {
+            for (Entry<Part, Integer> p : getParts().entrySet()) {
+                return p;
+            }
         }
         return null;
     }

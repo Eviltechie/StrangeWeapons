@@ -32,12 +32,16 @@ public class IncrementListener implements Listener {
         if (item.getAmount() > 0 && StrangeWeapon.isStrangeWeapon(item)) {
             StrangeWeapon strange = new StrangeWeapon(item);
             Entry<Part, Integer> oldPrimary = strange.getPrimary();
-            String oldName = Util.getWeaponName(item, (int) (oldPrimary.getValue() * oldPrimary.getKey().getMultiplier()));
-            strange.incrementStat(part, 1);
-            Entry<Part, Integer> newPrimary = strange.getPrimary();
-            String newName = Util.getWeaponName(item, (int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier()));
-            if (!oldName.equals(newName)) {
-                plugin.getServer().broadcastMessage(player.getDisplayName() + "'s " + Util.toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " ")) + ChatColor.WHITE + " has reached a new rank: " + ChatColor.GOLD + Util.getWeaponName((int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier())));
+            if (oldPrimary == null) {
+                strange.incrementStat(part, 1);
+            } else {
+                String oldName = Util.getWeaponName(item, (int) (oldPrimary.getValue() * oldPrimary.getKey().getMultiplier()), strange.getQuality());
+                strange.incrementStat(part, 1);
+                Entry<Part, Integer> newPrimary = strange.getPrimary();
+                String newName = Util.getWeaponName(item, (int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier()), strange.getQuality());
+                if (!oldName.equals(newName)) {
+                    plugin.getServer().broadcastMessage(player.getDisplayName() + "'s " + Util.toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " ")) + ChatColor.WHITE + " has reached a new rank: " + ChatColor.GOLD + Util.getWeaponName((int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier())));
+                }
             }
             player.setItemInHand(strange.getItemStack());
         }
@@ -76,19 +80,30 @@ public class IncrementListener implements Listener {
             if (item.getAmount() > 0 && StrangeWeapon.isStrangeWeapon(item)) {
                 StrangeWeapon strange = new StrangeWeapon(item);
                 Entry<Part, Integer> oldPrimary = strange.getPrimary();
-                String oldName = Util.getWeaponName(item, (int) (oldPrimary.getValue() * oldPrimary.getKey().getMultiplier()));
-                Part thisKill;
-                try {
-                    thisKill = Part.valueOf(event.getEntityType().name());
-                } catch (IllegalArgumentException e) {
-                    return;
-                }
-                strange.incrementStat(thisKill, 1);
-                strange.incrementStat(Part.MOB_KILLS, 1);
-                Entry<Part, Integer> newPrimary = strange.getPrimary();
-                String newName = Util.getWeaponName(item, (int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier()));
-                if (!oldName.equals(newName)) {
-                    plugin.getServer().broadcastMessage(player.getDisplayName() + "'s " + Util.toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " ")) + ChatColor.WHITE + " has reached a new rank: " + Util.getWeaponName((int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier())));
+                if (oldPrimary == null) {
+                    Part thisKill;
+                    try {
+                        thisKill = Part.valueOf(event.getEntityType().name());
+                    } catch (IllegalArgumentException e) {
+                        return;
+                    }
+                    strange.incrementStat(thisKill, 1);
+                    strange.incrementStat(Part.MOB_KILLS, 1);
+                } else {
+                    String oldName = Util.getWeaponName(item, (int) (oldPrimary.getValue() * oldPrimary.getKey().getMultiplier()), strange.getQuality());
+                    Part thisKill;
+                    try {
+                        thisKill = Part.valueOf(event.getEntityType().name());
+                    } catch (IllegalArgumentException e) {
+                        return;
+                    }
+                    strange.incrementStat(thisKill, 1);
+                    strange.incrementStat(Part.MOB_KILLS, 1);
+                    Entry<Part, Integer> newPrimary = strange.getPrimary();
+                    String newName = Util.getWeaponName(item, (int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier()), strange.getQuality());
+                    if (!oldName.equals(newName)) {
+                        plugin.getServer().broadcastMessage(player.getDisplayName() + "'s " + Util.toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " ")) + ChatColor.WHITE + " has reached a new rank: " + Util.getWeaponName((int) (newPrimary.getValue() * newPrimary.getKey().getMultiplier())));
+                    }
                 }
                 player.setItemInHand(strange.getItemStack());
             }

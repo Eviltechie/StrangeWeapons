@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 import to.joe.strangeweapons.MetaParser;
 import to.joe.strangeweapons.Part;
+import to.joe.strangeweapons.Quality;
 import to.joe.strangeweapons.meta.Crate;
 import to.joe.strangeweapons.meta.StrangePart;
 import to.joe.strangeweapons.meta.StrangeWeapon;
@@ -44,8 +45,9 @@ public class StrangeCommand implements CommandExecutor {
                 sender.sendMessage(ChatColor.RED + "I can only make one thing strange at a time!");
                 return true;
             } else {
-                player.setItemInHand(new StrangeWeapon(item, chosenPart).getItemStack());
-                sender.sendMessage(ChatColor.GOLD + "POOF!");
+                ItemStack result = new StrangeWeapon(item, Quality.STRANGE, chosenPart).getItemStack();
+                player.setItemInHand(result);
+                sender.sendMessage(ChatColor.GOLD + "POOF! " + ChatColor.AQUA + "You now have a " + result.getItemMeta().getDisplayName());
                 return true;
             }
         } else {
