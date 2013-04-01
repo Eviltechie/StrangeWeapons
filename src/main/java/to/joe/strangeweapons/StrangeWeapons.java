@@ -118,6 +118,18 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
 
         config = new Config(getConfig());
 
+        if (config.itemDropRollMaxTime - config.itemDropRollMinTime < 1) {
+            getLogger().severe("itemDropRollMaxTime must be greater than itemDropRollMinTime");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
+        if (config.crateDropRollMaxTime - config.crateDropRollMinTime < 1) {
+            getLogger().severe("crateDropRollMaxTime must be greater than crateDropRollMinTime");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
         if (!config.durability) {
             new DurabilityListener(this);
         }
