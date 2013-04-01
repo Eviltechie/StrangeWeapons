@@ -53,7 +53,7 @@ public class NewPartCommand implements CommandExecutor {
 
         if (args.length > 2) {
             try {
-                target = Util.getPlayer(args[3], sender);
+                target = Util.getPlayer(args[2], sender);
             } catch (BadPlayerMatchException e) {
                 sender.sendMessage(ChatColor.RED + e.getMessage());
                 return true;

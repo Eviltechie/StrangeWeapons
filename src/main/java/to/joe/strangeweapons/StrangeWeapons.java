@@ -44,12 +44,14 @@ import to.joe.strangeweapons.datastorage.DataStorageInterface;
 import to.joe.strangeweapons.datastorage.MySQLDataStorage;
 import to.joe.strangeweapons.datastorage.PlayerDropData;
 import to.joe.strangeweapons.datastorage.YamlDataStorage;
+import to.joe.strangeweapons.listener.DestructionListener;
 import to.joe.strangeweapons.listener.DurabilityListener;
 import to.joe.strangeweapons.listener.IncrementListener;
+import to.joe.strangeweapons.listener.InventoryListener;
 import to.joe.strangeweapons.meta.Crate;
 import to.joe.strangeweapons.meta.StrangeWeapon;
 
-public class StrangeWeapons extends JavaPlugin implements Listener { //TODO Setquality
+public class StrangeWeapons extends JavaPlugin implements Listener {
 
     public Config config;
     public final Map<String, String> tags = new HashMap<String, String>();
@@ -121,6 +123,8 @@ public class StrangeWeapons extends JavaPlugin implements Listener { //TODO Setq
         }
 
         new IncrementListener(this);
+        new DestructionListener(this);
+        new InventoryListener(this);
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new PlaytimeRecorder(this), 600, 1200);
     }

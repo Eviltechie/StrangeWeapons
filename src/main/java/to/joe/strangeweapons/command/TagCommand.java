@@ -23,7 +23,7 @@ public class TagCommand implements CommandExecutor {
             return true;
         }
         if (args.length == 0) {
-            sender.sendMessage(ChatColor.RED + "/tag <usage/description>");
+            sender.sendMessage(ChatColor.RED + "/tag <name/description>");
             return true;
         }
         StringBuilder sb = new StringBuilder();

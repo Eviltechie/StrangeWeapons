@@ -25,15 +25,17 @@ public class StrangeWeapon {
     public static List<String> idStrings = new ArrayList<String>();
 
     public static boolean isStrangeWeapon(ItemStack item) {
-        ItemMeta meta = item.getItemMeta();
-        if (meta.hasLore()) {
-            List<String> lore = item.getItemMeta().getLore();
-            String counter = ChatColor.stripColor(lore.get(lore.size() - 1));
-            for (String s : idStrings) {
-                Pattern p = Pattern.compile(s);
-                Matcher m = p.matcher(counter);
-                if (m.matches() && Integer.parseInt(m.group(1)) != 0) {
-                    return true;
+        if (item.hasItemMeta()) {
+            ItemMeta meta = item.getItemMeta();
+            if (meta.hasLore()) {
+                List<String> lore = item.getItemMeta().getLore();
+                String counter = ChatColor.stripColor(lore.get(lore.size() - 1));
+                for (String s : idStrings) {
+                    Pattern p = Pattern.compile(s);
+                    Matcher m = p.matcher(counter);
+                    if (m.matches() && Integer.parseInt(m.group(1)) != 0) {
+                        return true;
+                    }
                 }
             }
         }
@@ -88,7 +90,7 @@ public class StrangeWeapon {
             meta.setDisplayName(getQuality().getPrefix() + Util.getWeaponName(item, (int) (getPrimary().getValue() * getPrimary().getKey().getMultiplier())));
         }
         if (hasDescription()) {
-            lore.add(ChatColor.WHITE + "" + ChatColor.ITALIC + "Description: " + data.getDescription());
+            lore.add(ChatColor.GOLD + "" + ChatColor.ITALIC + "Description: " + ChatColor.WHITE + data.getDescription());
         }
         for (Entry<Part, Integer> p : getParts().entrySet()) {
             lore.add(ChatColor.WHITE + p.getKey().getName() + ": " + p.getValue());

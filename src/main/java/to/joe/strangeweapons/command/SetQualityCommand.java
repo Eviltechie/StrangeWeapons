@@ -24,7 +24,7 @@ public class SetQualityCommand implements CommandExecutor {
 
         if (args.length > 0) {
             try {
-                quality = Quality.valueOf(args[0]);
+                quality = Quality.valueOf(args[0].toUpperCase());
             } catch (IllegalArgumentException e) {
                 sender.sendMessage(ChatColor.RED + "Invalid quality");
                 return true;
@@ -43,5 +43,4 @@ public class SetQualityCommand implements CommandExecutor {
         }
         return true;
     }
-
 }

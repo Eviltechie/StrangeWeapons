@@ -38,7 +38,7 @@ public class NewDescriptionTagCommand implements CommandExecutor {
 
         if (args.length > 1) {
             try {
-                target = Util.getPlayer(args[2], sender);
+                target = Util.getPlayer(args[1], sender);
             } catch (BadPlayerMatchException e) {
                 sender.sendMessage(ChatColor.RED + e.getMessage());
                 return true;

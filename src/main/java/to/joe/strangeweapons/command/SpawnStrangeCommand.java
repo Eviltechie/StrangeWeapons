@@ -38,7 +38,7 @@ public class SpawnStrangeCommand implements CommandExecutor {
             while (i.hasNext()) {
                 String s = i.next();
                 if (s.matches("\".*?\"")) {
-                    combinedArgs.add(s.substring(1, s.length() - 1));
+                    combinedArgs.add(s);
                 } else if (s.contains("\"")) {
                     final StringBuilder sb = new StringBuilder();
                     do {
@@ -46,7 +46,7 @@ public class SpawnStrangeCommand implements CommandExecutor {
                         s = i.next();
                     } while (!s.contains("\""));
                     sb.append(s);
-                    combinedArgs.add(sb.substring(1, sb.length() - 1));
+                    combinedArgs.add(sb.toString());
                 } else {
                     combinedArgs.add(s);
                 }
@@ -67,7 +67,7 @@ public class SpawnStrangeCommand implements CommandExecutor {
 
         if (combinedArgs.size() > position) {
             try {
-                quality = Quality.valueOf(combinedArgs.get(position));
+                quality = Quality.valueOf(combinedArgs.get(position).toUpperCase());
             } catch (IllegalArgumentException e) {
                 sender.sendMessage(ChatColor.RED + "Invalid quality");
                 return true;
@@ -79,14 +79,16 @@ public class SpawnStrangeCommand implements CommandExecutor {
 
         position++;
 
-        if (combinedArgs.get(position).charAt(0) == '"') {
-            if (!combinedArgs.get(position).equals("")) {
-                name = combinedArgs.get(position).substring(1, combinedArgs.get(position).length() - 1);
-            }
-            position++;
+        if (combinedArgs.size() > position) {
             if (combinedArgs.get(position).charAt(0) == '"') {
-                description = combinedArgs.get(position).substring(1, combinedArgs.get(position).length() - 1);
+                if (!combinedArgs.get(position).equals("\"\"")) {
+                    name = combinedArgs.get(position).substring(1, combinedArgs.get(position).length() - 1);
+                }
                 position++;
+                if (combinedArgs.get(position).charAt(0) == '"') {
+                    description = combinedArgs.get(position).substring(1, combinedArgs.get(position).length() - 1);
+                    position++;
+                }
             }
         }
 
@@ -151,7 +153,15 @@ public class SpawnStrangeCommand implements CommandExecutor {
         }
         strange.setParts(parts);
 
-        target.getInventory().addItem(strange.getItemStack());
+        ItemStack result = strange.getItemStack();
+
+        target.getInventory().addItem(result);
+
+        if (target.equals(sender)) {
+            sender.sendMessage(ChatColor.GOLD + "Given " + ChatColor.AQUA + "you " + ChatColor.GOLD + "a " + result.getItemMeta().getDisplayName());
+        } else {
+            sender.sendMessage(ChatColor.GOLD + "Given " + ChatColor.AQUA + target.getName() + ChatColor.GOLD + "a " + result.getItemMeta().getDisplayName());
+        }
 
         return true;
     }
