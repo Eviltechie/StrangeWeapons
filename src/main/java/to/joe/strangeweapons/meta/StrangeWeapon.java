@@ -149,9 +149,11 @@ public class StrangeWeapon {
     }
 
     public void incrementStat(Part part, int toAdd) {
-        if (getParts().containsKey(part)) {
-            int oldVal = getParts().get(part);
-            getParts().put(part, oldVal + toAdd);
+        if (getParts() != null) {
+            if (getParts().containsKey(part)) {
+                int oldVal = getParts().get(part);
+                getParts().put(part, oldVal + toAdd);
+            }
         }
     }
 
