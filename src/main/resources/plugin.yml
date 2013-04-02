@@ -89,7 +89,7 @@ permissions:
   strangeweapons.command.strange.specifypart:
     description: Specify the initial part when using the strange command
   strangeweapons.command.newcrate:
-    description:: Spawn crates
+    description: Spawn crates
   strangeweapons.command.newkey:
     description: Spawn keys
   strangeweapons.command.newpart:
