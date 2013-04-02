@@ -60,8 +60,8 @@ public interface DataStorageInterface {
     public void updatePlayerDropData(PlayerDropData data) throws DataStorageException;
 
     /**
-     * Checks if the player has reached their item drop limit and thus if an item can drop.
-     * Does not check if an item should drop.
+     * Checks if the player has reached their item drop limit and thus if an item <b>can</b> drop.
+     * Does not check if an item <b>should</b> drop.
      * 
      * @param data
      * @return
