@@ -77,7 +77,9 @@ public class WeaponData implements Cloneable {
         WeaponData data = new WeaponData();
         data.setCustomName(customName);
         data.setDescription(description);
-        data.setParts((LinkedHashMap<Part, Integer>) parts.clone());
+        if (parts != null) {
+            data.setParts((LinkedHashMap<Part, Integer>) parts.clone());
+        }
         data.setQuality(quality);
         data.setWeaponId(weaponId);
         return data;
