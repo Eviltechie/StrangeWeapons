@@ -450,7 +450,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
                 player.sendMessage(ChatColor.RED + "You may not use that on an anvil.");
             }
         }
-        if (event.getSlotType() == SlotType.FUEL) { //Stop Crates from being used as fuel in furnaces or powered mine carts.
+        if (event.getSlotType() == SlotType.FUEL) { //Stop Crates from being used as fuel in furnaces
             ItemStack item = event.getCursor();
             if ((event.getSlot() == 0 || event.getSlot() == 1) && event.getSlotType() == SlotType.FUEL && (Crate.isCrate(item) || MetaParser.isKey(item) || StrangePart.isPart(item) || MetaParser.isNameTag(item) || MetaParser.isDescriptionTag(item))) {
                 event.setCancelled(true);

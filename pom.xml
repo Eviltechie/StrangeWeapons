@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>to.joe</groupId>
     <artifactId>StrangeWeapons</artifactId>
-    <version>0.5.2</version>
+    <version>0.5.2M</version>
     <name>StrangeWeapons</name>
     <url>http://joe.to</url>
     <description>Strange weapons</description>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.4.6-R0.1</version>
+            <version>1.4.7-R1.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
     
