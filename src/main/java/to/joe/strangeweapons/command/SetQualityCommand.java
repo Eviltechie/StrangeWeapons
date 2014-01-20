@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import to.joe.strangeweapons.Quality;
-import to.joe.strangeweapons.meta.StrangeWeapon;
 
 public class SetQualityCommand implements CommandExecutor {
 
@@ -34,21 +33,6 @@ public class SetQualityCommand implements CommandExecutor {
             return true;
         }
 
-        if (StrangeWeapon.isStrangeWeapon(item)) {
-            StrangeWeapon strange = new StrangeWeapon(item);
-            if (quality == Quality.STRANGE && strange.getParts().size() == 0) {
-                sender.sendMessage(ChatColor.RED + "This weapon must have at least one part if I am to make it strange");
-                return true;
-            }
-            strange.setQuality(quality);
-            player.setItemInHand(strange.getItemStack());
-        } else {
-            if (quality != Quality.STRANGE) {
-                player.setItemInHand(new StrangeWeapon(item, quality, null).getItemStack());
-            } else {
-                sender.sendMessage(ChatColor.RED + " I cannot make a strange weapon with this command. Use /strange instead");
-            }
-        }
         return true;
     }
 }

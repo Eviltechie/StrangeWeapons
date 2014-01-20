@@ -20,9 +20,6 @@ levels:
   400: Legendary
   450: Endian
   500: Notch's Own
-idstrings:
-  - 'Strange Weapon #{#}'
-  - 'Level: {#}'
 datastorage: yaml
 taglengthlimit: 50
 maxparts: 3
