@@ -13,20 +13,10 @@ import to.joe.strangeweapons.StrangeWeapons;
 public class Cache implements DataStorageInterface {
 
     private StrangeWeapons plugin;
-    private Map<Integer, WeaponData> cachedWeaponData = new HashMap<Integer, WeaponData>();
     private Map<String, PlayerDropData> cachedPlayerDropData = new HashMap<String, PlayerDropData>();
     private DataStorageInterface DSI;
 
     public void shutdown() {
-        for (WeaponData data : cachedWeaponData.values()) {
-            if (!data.isUpdated()) {
-                try {
-                    DSI.updateWeaponData(data);
-                } catch (DataStorageException e) {
-                    plugin.getLogger().log(Level.SEVERE, "Error writing weapon data cache to storage on shutdown", e);
-                }
-            }
-        }
         for (PlayerDropData data : cachedPlayerDropData.values()) {
             if (!data.isUpdated()) {
                 try {
@@ -39,14 +29,7 @@ public class Cache implements DataStorageInterface {
     }
 
     private void writeUpdates() {
-        final Set<WeaponData> weaponDataToUpdate = new HashSet<WeaponData>();
         final Set<PlayerDropData> playerDropDataToUpdate = new HashSet<PlayerDropData>();
-        for (WeaponData data : cachedWeaponData.values()) {
-            if (!data.isUpdated()) {
-                weaponDataToUpdate.add(data.clone());
-                data.setUpdated(true);
-            }
-        }
         for (PlayerDropData data : cachedPlayerDropData.values()) {
             if (!data.isUpdated()) {
                 playerDropDataToUpdate.add(data.clone());
@@ -56,14 +39,6 @@ public class Cache implements DataStorageInterface {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                for (WeaponData data : weaponDataToUpdate) {
-                    try {
-                        DSI.updateWeaponData(data);
-                        data.setUpdated(true);
-                    } catch (DataStorageException e) {
-                        plugin.getLogger().log(Level.SEVERE, "Error writing weapon data cache to storage", e);
-                    }
-                }
                 for (PlayerDropData data : playerDropDataToUpdate) {
                     try {
                         DSI.updatePlayerDropData(data);
@@ -85,27 +60,6 @@ public class Cache implements DataStorageInterface {
                 writeUpdates();
             }
         }, 1200, 1200);
-    }
-
-    @Override
-    public WeaponData getWeaponData(int id) throws DataStorageException {
-        if (cachedWeaponData.containsKey(id)) {
-            return cachedWeaponData.get(id);
-        } else {
-            return DSI.getWeaponData(id);
-        }
-    }
-
-    @Override
-    public WeaponData saveNewWeaponData(WeaponData data) throws DataStorageException {
-        data = DSI.saveNewWeaponData(data);
-        cachedWeaponData.put(data.getWeaponId(), data);
-        return data;
-    }
-
-    @Override
-    public void updateWeaponData(WeaponData data) throws DataStorageException {
-        cachedWeaponData.put(data.getWeaponId(), data);
     }
 
     @Override

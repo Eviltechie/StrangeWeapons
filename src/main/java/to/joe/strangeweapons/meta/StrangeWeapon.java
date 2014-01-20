@@ -17,7 +17,6 @@ import to.joe.strangeweapons.Quality;
 import to.joe.strangeweapons.StrangeWeapons;
 import to.joe.strangeweapons.Util;
 import to.joe.strangeweapons.datastorage.DataStorageException;
-import to.joe.strangeweapons.datastorage.WeaponData;
 
 public class StrangeWeapon {
 
@@ -44,7 +43,6 @@ public class StrangeWeapon {
 
     private ItemStack item;
     private ItemMeta meta;
-    private WeaponData data;
 
     public StrangeWeapon(ItemStack item) {
         this.item = item;
@@ -187,14 +185,6 @@ public class StrangeWeapon {
 
     public Quality getQuality() {
         return data.getQuality();
-    }
-
-    private void setWeaponData(WeaponData data) {
-        this.data = data;
-    }
-
-    private WeaponData getWeaponData() {
-        return data;
     }
 
 }

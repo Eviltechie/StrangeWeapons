@@ -9,14 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
 
 import org.bukkit.inventory.ItemStack;
 
-import to.joe.strangeweapons.Part;
-import to.joe.strangeweapons.Quality;
 import to.joe.strangeweapons.StrangeWeapons;
 
 public class MySQLDataStorage implements DataStorageInterface {
@@ -45,8 +40,6 @@ public class MySQLDataStorage implements DataStorageInterface {
         this.plugin = plugin;
         conn = DriverManager.getConnection(url, username, password);
 
-        initTable("weapons");
-        initTable("parts");
         initTable("dropdata");
         initTable("droprecords");
     }
@@ -57,109 +50,6 @@ public class MySQLDataStorage implements DataStorageInterface {
 
     private PreparedStatement getFreshPreparedStatementWithGeneratedKeys(String query) throws SQLException {
         return conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-    }
-
-    @Override
-    public WeaponData getWeaponData(int id) throws DataStorageException {
-        WeaponData data = new WeaponData();
-        data.setWeaponId(id);
-
-        try {
-            PreparedStatement ps = getFreshPreparedStatementColdFromTheRefrigerator("SELECT * FROM weapons WHERE weaponid = ?");
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            rs.next();
-            data.setQuality(Quality.valueOf(rs.getString(2)));
-            data.setCustomName(rs.getString(3));
-            data.setDescription(rs.getString(4));
-
-            ps = getFreshPreparedStatementColdFromTheRefrigerator("SELECT * FROM parts WHERE weaponid = ? ORDER BY partorder");
-            ps.setInt(1, id);
-            rs = ps.executeQuery();
-            LinkedHashMap<Part, Integer> parts = new LinkedHashMap<Part, Integer>();
-            while (rs.next()) {
-                parts.put(Part.valueOf(rs.getString(2)), rs.getInt(3));
-            }
-            data.setParts(parts);
-
-        } catch (SQLException e) {
-            throw new DataStorageException(e);
-        }
-        return data;
-    }
-
-    private void updateParts(int weaponID, LinkedHashMap<Part, Integer> parts) throws SQLException {
-        PreparedStatement ps = getFreshPreparedStatementColdFromTheRefrigerator("DELETE FROM parts WHERE weaponid = ?");
-        ps.setInt(1, weaponID);
-        ps.execute();
-
-        if (parts != null) {
-            int position = 0;
-            for (Entry<Part, Integer> part : parts.entrySet()) {
-                ps = getFreshPreparedStatementColdFromTheRefrigerator("INSERT INTO parts (weaponid, part, stat, partorder) VALUES (?,?,?,?)");
-                ps.setInt(1, weaponID);
-                ps.setString(2, part.getKey().toString());
-                ps.setInt(3, part.getValue());
-                ps.setInt(4, position++);
-                ps.execute();
-            }
-        }
-    }
-
-    @Override
-    public WeaponData saveNewWeaponData(WeaponData data) throws DataStorageException {
-        try {
-            PreparedStatement ps = getFreshPreparedStatementWithGeneratedKeys("INSERT INTO weapons (quality, customname, description) VALUES (?,?,?)");
-            if (data.getQuality() == null) {
-                ps.setNull(1, Types.VARCHAR);
-            } else {
-                ps.setString(1, data.getQuality().toString());
-            }
-            if (data.getCustomName() == null) {
-                ps.setNull(2, Types.VARCHAR);
-            } else {
-                ps.setString(2, data.getCustomName());
-            }
-            if (data.getDescription() == null) {
-                ps.setNull(3, Types.VARCHAR);
-            } else {
-                ps.setString(3, data.getDescription());
-            }
-            ps.execute();
-            ResultSet rs = ps.getGeneratedKeys();
-            rs.next();
-            int weaponID = rs.getInt(1);
-            data.setWeaponId(weaponID);
-
-            updateParts(weaponID, data.getParts());
-
-        } catch (SQLException e) {
-            throw new DataStorageException(e);
-        }
-        return data;
-    }
-
-    @Override
-    public void updateWeaponData(WeaponData data) throws DataStorageException {
-        try {
-            PreparedStatement ps = getFreshPreparedStatementColdFromTheRefrigerator("UPDATE weapons SET quality = ?, customname = ?, description = ? WHERE weaponid = ?");
-            ps.setString(1, data.getQuality().toString());
-            if (data.getCustomName() == null) {
-                ps.setNull(2, Types.VARCHAR);
-            } else {
-                ps.setString(2, data.getCustomName());
-            }
-            if (data.getDescription() == null) {
-                ps.setNull(3, Types.VARCHAR);
-            } else {
-                ps.setString(3, data.getDescription());
-            }
-            ps.setInt(4, data.getWeaponId());
-            ps.execute();
-            updateParts(data.getWeaponId(), data.getParts());
-        } catch (SQLException e) {
-            throw new DataStorageException(e);
-        }
     }
 
     @Override

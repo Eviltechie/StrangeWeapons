@@ -2,10 +2,7 @@ package to.joe.strangeweapons.datastorage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -13,7 +10,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import to.joe.strangeweapons.Part;
 import to.joe.strangeweapons.StrangeWeapons;
 
 public class YamlDataStorage implements DataStorageInterface {
@@ -82,60 +78,6 @@ public class YamlDataStorage implements DataStorageInterface {
         } catch (IOException e) {
             plugin.getServer().getLogger().log(Level.SEVERE, "Error writing file on shutdown!", e);
         }
-    }
-
-    @Override
-    public WeaponData getWeaponData(int id) throws DataStorageException {
-        if (this.weaponConfig.getConfigurationSection("weapons").getConfigurationSection(Integer.toString(id)) == null) {
-            throw new DataStorageException("Tried to read a weapon whose id didn't exist!");
-        }
-        return WeaponData.fromConfigurationSection(id, this.weaponConfig.getConfigurationSection("weapons").getConfigurationSection(Integer.toString(id)));
-    }
-
-    @Override
-    public WeaponData saveNewWeaponData(WeaponData data) throws DataStorageException {
-        int newId = lastWeaponId + 1;
-        this.weaponConfig.getConfigurationSection("weapons").createSection(Integer.toString(newId));
-        ConfigurationSection section = this.weaponConfig.getConfigurationSection("weapons").getConfigurationSection(Integer.toString(newId));
-        section.set("quality", data.getQuality().toString());
-        if (data.getCustomName() != null) {
-            section.set("customname", data.getCustomName());
-        }
-        if (data.getDescription() != null) {
-            section.set("description", data.getDescription());
-        }
-        List<String> rawParts = new ArrayList<String>();
-        if (data.getParts() != null) {
-            for (Entry<Part, Integer> part : data.getParts().entrySet()) {
-                rawParts.add(part.getKey() + "," + part.getValue());
-            }
-        }
-        section.set("parts", rawParts);
-        data.setWeaponId(newId);
-        lastWeaponId = newId;
-        return data;
-    }
-
-    @Override
-    public void updateWeaponData(WeaponData data) throws DataStorageException {
-        if (this.weaponConfig.getConfigurationSection("weapons").getConfigurationSection(Integer.toString(data.getWeaponId())) == null) {
-            throw new DataStorageException("Tried to update a weapon whose id didn't exist!");
-        }
-        ConfigurationSection section = this.weaponConfig.getConfigurationSection("weapons").getConfigurationSection(Integer.toString(data.getWeaponId()));
-        section.set("quality", data.getQuality().toString());
-        if (data.getCustomName() != null) {
-            section.set("customname", data.getCustomName());
-        }
-        if (data.getDescription() != null) {
-            section.set("description", data.getDescription());
-        }
-        List<String> rawParts = new ArrayList<String>();
-        if (data.getParts() != null) {
-            for (Entry<Part, Integer> part : data.getParts().entrySet()) {
-                rawParts.add(part.getKey() + "," + part.getValue());
-            }
-        }
-        section.set("parts", rawParts);
     }
 
     @Override

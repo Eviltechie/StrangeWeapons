@@ -5,33 +5,6 @@ import org.bukkit.inventory.ItemStack;
 public interface DataStorageInterface {
 
     /**
-     * Gets the {@link WeaponData} with the specified id from the database
-     * 
-     * @param id
-     *            the id from the database
-     * @return the specified {@link WeaponData}
-     */
-    public WeaponData getWeaponData(int id) throws DataStorageException;
-
-    /**
-     * Stores {@link WeaponData} in the database for the first time
-     * 
-     * @param data
-     *            the data to insert
-     * @return the new data with an updated id
-     */
-    public WeaponData saveNewWeaponData(WeaponData data) throws DataStorageException;
-
-    /**
-     * Updates the {@link WeaponData} stored to the one provided. The weaponid will not be updated.
-     * 
-     * @param data
-     *            The data to update
-     * @throws DataStorageException
-     */
-    public void updateWeaponData(WeaponData data) throws DataStorageException;
-
-    /**
      * Gets the {@link PlayerDropData} for the specified player from the database. Creates it if it does not exist.
      * 
      * @param player
