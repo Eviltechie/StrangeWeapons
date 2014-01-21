@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import to.joe.strangeweapons.StrangeWeapons;
-import to.joe.strangeweapons.meta.StrangeWeapon;
 
 public class DropsCommand implements CommandExecutor {
 
@@ -65,9 +64,6 @@ public class DropsCommand implements CommandExecutor {
                 }
                 maxItem++;
                 ItemStack item = ((Player) sender).getItemInHand().clone();
-                if (StrangeWeapon.isStrangeWeapon(item)) {
-                    item = new StrangeWeapon(item).clone();
-                }
                 plugin.getConfig().set("drops." + maxItem + ".item", item);
                 plugin.getConfig().set("drops." + maxItem + ".weight", weight);
                 sender.sendMessage(ChatColor.GOLD + "Added " + ChatColor.AQUA + ChatColor.stripColor(item.serialize().toString()) + ChatColor.GOLD + " with weight " + weight);

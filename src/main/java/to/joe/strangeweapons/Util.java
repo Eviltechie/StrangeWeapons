@@ -11,13 +11,11 @@ import to.joe.strangeweapons.exception.BadPlayerMatchException;
 
 public class Util {
 
-    public static StrangeWeapons plugin;
-
     public static Player getPlayer(String target, CommandSender searcher) throws BadPlayerMatchException {
 
         final List<Player> players = new ArrayList<Player>();
 
-        for (final Player player : plugin.getServer().getOnlinePlayers()) {
+        for (final Player player : StrangeWeapons.plugin.getServer().getOnlinePlayers()) {
             if (searcher instanceof Player && !((Player) searcher).canSee(player)) {
                 continue;
             }
@@ -52,19 +50,11 @@ public class Util {
     }
 
     public static String getWeaponName(int stat) {
-        while (!plugin.config.weaponText.containsKey(stat)) {
+        while (!StrangeWeapons.plugin.config.weaponText.containsKey(stat)) {
             stat--;
             if (stat < 0)
                 return "Sub-par";
         }
-        return plugin.config.weaponText.get(stat);
-    }
-
-    public static String getWeaponName(ItemStack item, int stat, Quality quality) {
-        if (quality == Quality.STRANGE) {
-            return getWeaponName(stat) + " " + Util.toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " "));
-        } else {
-            return Util.toTitleCase(item.getType().toString().toLowerCase().replaceAll("_", " "));
-        }
+        return StrangeWeapons.plugin.config.weaponText.get(stat);
     }
 }

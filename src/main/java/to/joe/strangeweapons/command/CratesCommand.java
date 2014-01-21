@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import to.joe.strangeweapons.StrangeWeapons;
-import to.joe.strangeweapons.meta.StrangeWeapon;
 
 public class CratesCommand implements CommandExecutor {
 
@@ -125,9 +124,6 @@ public class CratesCommand implements CommandExecutor {
                     }
                     maxItem++;
                     ItemStack item = ((Player) sender).getItemInHand().clone();
-                    if (StrangeWeapon.isStrangeWeapon(item)) {
-                        item = new StrangeWeapon(item).clone();
-                    }
                     plugin.getConfig().set("crates." + series + ".contents." + maxItem + ".item", item);
                     plugin.getConfig().set("crates." + series + ".contents." + maxItem + ".weight", weight);
                     plugin.getConfig().set("crates." + series + ".contents." + maxItem + ".hidden", false);

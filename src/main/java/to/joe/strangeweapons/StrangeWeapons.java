@@ -3,6 +3,7 @@ package to.joe.strangeweapons;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
@@ -41,7 +42,9 @@ import to.joe.strangeweapons.listener.InventoryListener;
 
 public class StrangeWeapons extends JavaPlugin implements Listener {
 
+    public static StrangeWeapons plugin;
     public Config config;
+    public Map<String, Quality> qualities = new LinkedHashMap<String, Quality>(); //TODO Populate this
     public final Map<String, String> tags = new HashMap<String, String>();
     final Map<String, Long> joinTimes = new HashMap<String, Long>();
     public final Random random = new Random();
@@ -49,6 +52,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        plugin = this;
         getConfig().options().copyDefaults(true);
         saveConfig();
 
@@ -95,9 +99,6 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
             return;
         }
 
-        PlayerDropData.plugin = this;
-        Util.plugin = this;
-
         config = new Config(getConfig());
 
         if (config.itemDropRollMaxTime - config.itemDropRollMinTime < 1) {
@@ -123,6 +124,7 @@ public class StrangeWeapons extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
+        plugin = null;
         if (dataStorage instanceof Cache) {
             ((Cache) dataStorage).shutdown();
         }

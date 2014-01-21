@@ -6,7 +6,6 @@ import to.joe.strangeweapons.StrangeWeapons;
 
 public class PlayerDropData implements Cloneable {
 
-    public static StrangeWeapons plugin;
     private static Random random = new Random();
 
     /*
@@ -81,13 +80,13 @@ public class PlayerDropData implements Cloneable {
     }
 
     public int rollItem() {
-        nextItemDrop = (random.nextInt(plugin.config.itemDropRollMaxTime - plugin.config.itemDropRollMinTime) + plugin.config.itemDropRollMinTime) * 60 + playTime;
+        nextItemDrop = (random.nextInt(StrangeWeapons.plugin.config.itemDropRollMaxTime - StrangeWeapons.plugin.config.itemDropRollMinTime) + StrangeWeapons.plugin.config.itemDropRollMinTime) * 60 + playTime;
         isUpdated = false;
         return nextItemDrop;
     }
 
     public int rollCrate() {
-        nextCrateDrop = (random.nextInt(plugin.config.crateDropRollMaxTime - plugin.config.crateDropRollMinTime) + plugin.config.crateDropRollMinTime) * 60 + playTime;
+        nextCrateDrop = (random.nextInt(StrangeWeapons.plugin.config.crateDropRollMaxTime - StrangeWeapons.plugin.config.crateDropRollMinTime) + StrangeWeapons.plugin.config.crateDropRollMinTime) * 60 + playTime;
         isUpdated = false;
         return nextCrateDrop;
     }
