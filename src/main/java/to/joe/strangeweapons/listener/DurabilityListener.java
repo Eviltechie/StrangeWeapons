@@ -21,7 +21,7 @@ public class DurabilityListener implements Listener {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
 
-    @SuppressWarnings("deprecation")
+
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
         Player p = null;
@@ -38,7 +38,7 @@ public class DurabilityListener implements Listener {
         }
     }
 
-    @SuppressWarnings("deprecation")
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player p = event.getPlayer();
@@ -48,7 +48,7 @@ public class DurabilityListener implements Listener {
         }
     }
 
-    @SuppressWarnings("deprecation")
+
     @EventHandler
     public void onBowFire(EntityShootBowEvent event) {
         if (event.getEntity() instanceof Player && StrangeWeapon.isStrangeWeapon(event.getBow())) {
@@ -57,7 +57,7 @@ public class DurabilityListener implements Listener {
         }
     }
 
-    @SuppressWarnings("deprecation")
+
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         if (event.getItem() == null) {
@@ -70,7 +70,7 @@ public class DurabilityListener implements Listener {
         }
     }
 
-    @SuppressWarnings("deprecation")
+
     @EventHandler
     public void onFish(PlayerFishEvent event) {
         if (event.getPlayer().getItemInHand().getType().equals(Material.FISHING_ROD) && StrangeWeapon.isStrangeWeapon(event.getPlayer().getItemInHand())) {

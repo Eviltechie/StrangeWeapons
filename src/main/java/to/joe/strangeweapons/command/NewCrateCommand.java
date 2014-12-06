@@ -25,7 +25,6 @@ public class NewCrateCommand implements CommandExecutor {
      * series quantity
      * series quantity target
      */
-    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         int series;
         int quantity = 1;

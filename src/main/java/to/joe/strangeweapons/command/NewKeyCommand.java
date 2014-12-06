@@ -1,5 +1,6 @@
 package to.joe.strangeweapons.command;
 
+import java.util.Collection;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -21,7 +22,6 @@ public class NewKeyCommand implements CommandExecutor
      * quantity
      * quantity target
      */
-    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) 
     {
         int quantity = 1;
@@ -92,7 +92,7 @@ public class NewKeyCommand implements CommandExecutor
     }
     private void giveKeysToAll(int quantity, CommandSender sender)
     {
-        Player[] playerlist = Bukkit.getServer().getOnlinePlayers();
+        Collection<? extends Player> playerlist = Bukkit.getServer().getOnlinePlayers();
         for (Player p : playerlist)
         {
             ItemStack key = MetaParser.makeKey();

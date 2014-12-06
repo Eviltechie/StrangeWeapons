@@ -17,7 +17,6 @@ public class NewDescriptionTagCommand implements CommandExecutor {
      * quantity
      * quantity target
      */
-    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         int quantity = 1;
         Player target;

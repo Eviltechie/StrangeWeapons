@@ -12,7 +12,6 @@ import to.joe.strangeweapons.meta.StrangeWeapon;
 
 public class SetQualityCommand implements CommandExecutor {
 
-    @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.RED + "Only players may use this command");

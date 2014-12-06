@@ -8,29 +8,35 @@ import org.bukkit.entity.Player;
 
 import to.joe.strangeweapons.StrangeWeapons;
 
-public class TagCommand implements CommandExecutor {
+public class TagCommand implements CommandExecutor
+{
 
     StrangeWeapons plugin;
 
-    public TagCommand(StrangeWeapons weapons) {
+    public TagCommand(StrangeWeapons weapons)
+    {
         plugin = weapons;
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
+    {
+        if (!(sender instanceof Player))
+        {
             sender.sendMessage(ChatColor.RED + "Players only");
             return true;
         }
-        if (args.length == 0) {
+        if (args.length == 0)
+        {
             sender.sendMessage(ChatColor.RED + "/tag <name/description>");
             return true;
         }
         StringBuilder sb = new StringBuilder();
-        for (String s : args) {
+        for (String s : args)
+        {
             sb.append(s).append(" ");
         }
-        if (sb.length() - 1 > plugin.config.tagLengthLimit) {
+        if (sb.length() - 1 > plugin.config.tagLengthLimit)
+        {
             sender.sendMessage(ChatColor.RED + "Tags must be shorter than " + plugin.config.tagLengthLimit + " characters");
             return true;
         }
