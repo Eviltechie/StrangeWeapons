@@ -24,10 +24,7 @@ public class SpawnStrangeCommand implements CommandExecutor
 {
 
     /*
-     * quality item:damage "part..." quality item:damage "part..." player
-     * quality "name" item:damage "part..." quality "name" item:damage "part..."
-     * player quality "name" "description" item:damage "part..." quality "name"
-     * "description" item:damage "part..." player
+     * quality item:damage "part..." quality item:damage "part..." player quality "name" item:damage "part..." quality "name" item:damage "part..." player quality "name" "description" item:damage "part..." quality "name" "description" item:damage "part..." player
      */
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
     {

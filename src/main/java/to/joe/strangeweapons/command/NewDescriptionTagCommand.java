@@ -11,41 +11,59 @@ import to.joe.strangeweapons.MetaParser;
 import to.joe.strangeweapons.Util;
 import to.joe.strangeweapons.exception.BadPlayerMatchException;
 
-public class NewDescriptionTagCommand implements CommandExecutor {
+public class NewDescriptionTagCommand implements CommandExecutor
+{
 
     /*
-     * quantity
-     * quantity target
+     * quantity quantity target
      */
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
+    {
         int quantity = 1;
         Player target;
 
-        if (args.length > 0) {
-            try {
+        if (args.length > 0)
+        {
+            try
+            {
                 quantity = Integer.parseInt(args[0]);
-            } catch (NumberFormatException e) {
+            }
+            catch (NumberFormatException e)
+            {
                 sender.sendMessage(ChatColor.RED + "That's not a number");
                 return true;
             }
-            if (quantity < 1) {
+            if (quantity < 1)
+            {
                 quantity = 1;
-            } else if (quantity > 64) {
-                quantity = 64;
             }
+            else
+                if (quantity > 64)
+                {
+                    quantity = 64;
+                }
         }
 
-        if (args.length > 1) {
-            try {
+        if (args.length > 1)
+        {
+            try
+            {
                 target = Util.getPlayer(args[1], sender);
-            } catch (BadPlayerMatchException e) {
+            }
+            catch (BadPlayerMatchException e)
+            {
                 sender.sendMessage(ChatColor.RED + e.getMessage());
                 return true;
             }
-        } else {
-            if (sender instanceof Player) {
+        }
+        else
+        {
+            if (sender instanceof Player)
+            {
                 target = (Player) sender;
-            } else {
+            }
+            else
+            {
                 sender.sendMessage(ChatColor.RED + "Specify a player to give the description tag to");
                 return true;
             }
@@ -55,9 +73,12 @@ public class NewDescriptionTagCommand implements CommandExecutor {
         tag.setAmount(quantity);
         target.getInventory().addItem(tag);
 
-        if (target.equals(sender)) {
+        if (target.equals(sender))
+        {
             sender.sendMessage(ChatColor.GOLD + "Given " + ChatColor.AQUA + "you " + quantity + ChatColor.GOLD + " description tag(s)");
-        } else {
+        }
+        else
+        {
             sender.sendMessage(ChatColor.GOLD + "Given " + ChatColor.AQUA + target.getName() + " " + quantity + ChatColor.GOLD + " description tag(s)");
         }
         return true;

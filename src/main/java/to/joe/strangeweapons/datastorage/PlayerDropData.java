@@ -4,16 +4,18 @@ import java.util.Random;
 
 import to.joe.strangeweapons.StrangeWeapons;
 
-public class PlayerDropData implements Cloneable {
+public class PlayerDropData implements Cloneable
+{
 
     public static StrangeWeapons plugin;
     private static Random random = new Random();
 
     /*
-     * Store their name, their playtime, when their next item drop is, and when their next crate drop is.
-     * When a player joins the server, this object is loaded or created for them.
-     * This will calculate when the players next drop will be.
-     * When they reach that time, if they are eligible for a drop they will receive it.
+     * Store their name, their playtime, when their next item drop is,
+     *  and when their next crate drop is. When a player joins the server, 
+     *  this object is loaded or created for them.
+     *   This will calculate when the players next drop will be. 
+     *   When they reach that time, if they are eligible for a drop they will receive it.
      */
 
     private boolean isUpdated = true;
@@ -22,78 +24,96 @@ public class PlayerDropData implements Cloneable {
     private int nextItemDrop;
     private int nextCrateDrop;
 
-    public PlayerDropData(String player, int playTime, int nextItemDrop, int nextCrateDrop) {
+    public PlayerDropData(String player, int playTime, int nextItemDrop, int nextCrateDrop)
+    {
         this.player = player;
         this.playTime = playTime;
         this.nextItemDrop = nextItemDrop;
         this.nextCrateDrop = nextCrateDrop;
-        if (nextItemDrop == 0) {
+        if (nextItemDrop == 0)
+        {
             rollItem();
         }
-        if (nextCrateDrop == 0) {
+        if (nextCrateDrop == 0)
+        {
             rollCrate();
         }
     }
 
-    public String getPlayer() {
+    public String getPlayer()
+    {
         return player;
     }
 
-    public boolean isUpdated() {
+    public boolean isUpdated()
+    {
         return isUpdated;
     }
 
-    public void setUpdated(boolean isUpdated) {
+    public void setUpdated(boolean isUpdated)
+    {
         this.isUpdated = isUpdated;
     }
 
-    public int getPlayTime() {
+    public int getPlayTime()
+    {
         return playTime;
     }
 
-    public void setPlayTime(int playTime) {
-        if (this.playTime != playTime) {
+    public void setPlayTime(int playTime)
+    {
+        if (this.playTime != playTime)
+        {
             isUpdated = false;
             this.playTime = playTime;
         }
     }
 
-    public int getNextItemDrop() {
+    public int getNextItemDrop()
+    {
         return nextItemDrop;
     }
 
-    public void setNextItemDrop(int nextItemDrop) {
-        if (this.nextItemDrop != nextItemDrop) {
+    public void setNextItemDrop(int nextItemDrop)
+    {
+        if (this.nextItemDrop != nextItemDrop)
+        {
             isUpdated = false;
             this.nextItemDrop = nextItemDrop;
         }
     }
 
-    public int getNextCrateDrop() {
+    public int getNextCrateDrop()
+    {
         return nextCrateDrop;
     }
 
-    public void setNextCrateDrop(int nextCrateDrop) {
-        if (this.nextCrateDrop != nextCrateDrop) {
+    public void setNextCrateDrop(int nextCrateDrop)
+    {
+        if (this.nextCrateDrop != nextCrateDrop)
+        {
             isUpdated = false;
             this.nextCrateDrop = nextCrateDrop;
         }
     }
 
-    public int rollItem() {
+    public int rollItem()
+    {
         nextItemDrop = (random.nextInt(plugin.config.itemDropRollMaxTime - plugin.config.itemDropRollMinTime) + plugin.config.itemDropRollMinTime) * 60 + playTime;
         isUpdated = false;
         return nextItemDrop;
     }
 
-    public int rollCrate() {
+    public int rollCrate()
+    {
         nextCrateDrop = (random.nextInt(plugin.config.crateDropRollMaxTime - plugin.config.crateDropRollMinTime) + plugin.config.crateDropRollMinTime) * 60 + playTime;
         isUpdated = false;
         return nextCrateDrop;
     }
 
     @Override
-    public PlayerDropData clone() {
+    public PlayerDropData clone()
+    {
         return new PlayerDropData(player, playTime, nextItemDrop, nextCrateDrop);
     }
 

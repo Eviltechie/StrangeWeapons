@@ -235,8 +235,7 @@ public class YamlDataStorage implements DataStorageInterface
             Set<String> keys = section.getKeys(false);
             for (String key : keys)
             {
-                if (!section.getConfigurationSection(key).getBoolean("iscrate")
-                        && section.getConfigurationSection(key).getLong("time") > (new Date().getTime() / 1000) - (plugin.config.itemDropReset * 120))
+                if (!section.getConfigurationSection(key).getBoolean("iscrate") && section.getConfigurationSection(key).getLong("time") > (new Date().getTime() / 1000) - (plugin.config.itemDropReset * 120))
                 {
                     numDrops++;
                 }
@@ -262,8 +261,7 @@ public class YamlDataStorage implements DataStorageInterface
             Set<String> keys = section.getKeys(false);
             for (String key : keys)
             {
-                if (section.getConfigurationSection(key).getBoolean("iscrate")
-                        && section.getConfigurationSection(key).getLong("time") > (new Date().getTime() / 1000) - (plugin.config.crateDropReset * 120))
+                if (section.getConfigurationSection(key).getBoolean("iscrate") && section.getConfigurationSection(key).getLong("time") > (new Date().getTime() / 1000) - (plugin.config.crateDropReset * 120))
                 {
                     numDrops++;
                 }

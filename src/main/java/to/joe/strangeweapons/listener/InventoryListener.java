@@ -38,9 +38,7 @@ public class InventoryListener implements Listener
         if (event.getInventory().getType() == InventoryType.BREWING)
         {
             ItemStack item = event.getCursor();
-            if (((event.getSlot() == 3 && event.getSlotType() == SlotType.FUEL) || (event.getSlotType() == SlotType.CRAFTING && (event.getSlot() == 0 || event.getSlot() == 1 || event.getSlot() == 2)))
-                    && (StrangeWeapon.isStrangeWeapon(item) || Crate.isCrate(item) || MetaParser.isKey(item) || StrangePart.isPart(item) || MetaParser.isNameTag(item) || MetaParser
-                            .isDescriptionTag(item)))
+            if (((event.getSlot() == 3 && event.getSlotType() == SlotType.FUEL) || (event.getSlotType() == SlotType.CRAFTING && (event.getSlot() == 0 || event.getSlot() == 1 || event.getSlot() == 2))) && (StrangeWeapon.isStrangeWeapon(item) || Crate.isCrate(item) || MetaParser.isKey(item) || StrangePart.isPart(item) || MetaParser.isNameTag(item) || MetaParser.isDescriptionTag(item)))
             {
                 event.setCancelled(true);
                 plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
@@ -56,8 +54,7 @@ public class InventoryListener implements Listener
         if (event.getInventory().getType() == InventoryType.ANVIL)
         {
             ItemStack item = event.getCursor();
-            if ((event.getSlot() == 0 || event.getSlot() == 1) && event.getSlotType() == SlotType.CRAFTING
-                    && (Crate.isCrate(item) || MetaParser.isKey(item) || StrangePart.isPart(item) || MetaParser.isNameTag(item) || MetaParser.isDescriptionTag(item)))
+            if ((event.getSlot() == 0 || event.getSlot() == 1) && event.getSlotType() == SlotType.CRAFTING && (Crate.isCrate(item) || MetaParser.isKey(item) || StrangePart.isPart(item) || MetaParser.isNameTag(item) || MetaParser.isDescriptionTag(item)))
             {
                 event.setCancelled(true);
                 plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
@@ -73,10 +70,7 @@ public class InventoryListener implements Listener
         if (event.getInventory().getType() == InventoryType.FURNACE)
         {
             ItemStack item = event.getCursor();
-            if (item.getType() != Material.AIR
-                    && ((event.getSlot() == 0 && event.getSlotType() == SlotType.CONTAINER) || (event.getSlot() == 1 && event.getSlotType() == SlotType.FUEL))
-                    && (StrangeWeapon.isStrangeWeapon(item) || Crate.isCrate(item) || MetaParser.isKey(item) || StrangePart.isPart(item) || MetaParser.isNameTag(item) || MetaParser
-                            .isDescriptionTag(item)))
+            if (item.getType() != Material.AIR && ((event.getSlot() == 0 && event.getSlotType() == SlotType.CONTAINER) || (event.getSlot() == 1 && event.getSlotType() == SlotType.FUEL)) && (StrangeWeapon.isStrangeWeapon(item) || Crate.isCrate(item) || MetaParser.isKey(item) || StrangePart.isPart(item) || MetaParser.isNameTag(item) || MetaParser.isDescriptionTag(item)))
             {
                 event.setCancelled(true);
                 plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
@@ -92,11 +86,7 @@ public class InventoryListener implements Listener
         if (event.getInventory().getType() == InventoryType.MERCHANT)
         {
             ItemStack item = event.getCursor();
-            if (item.getType() != Material.AIR
-                    && (event.getSlot() == 0 || event.getSlot() == 1)
-                    && event.getSlotType() == SlotType.CRAFTING
-                    && (StrangeWeapon.isStrangeWeapon(item) || Crate.isCrate(item) || MetaParser.isKey(item) || StrangePart.isPart(item) || MetaParser.isNameTag(item) || MetaParser
-                            .isDescriptionTag(item)))
+            if (item.getType() != Material.AIR && (event.getSlot() == 0 || event.getSlot() == 1) && event.getSlotType() == SlotType.CRAFTING && (StrangeWeapon.isStrangeWeapon(item) || Crate.isCrate(item) || MetaParser.isKey(item) || StrangePart.isPart(item) || MetaParser.isNameTag(item) || MetaParser.isDescriptionTag(item)))
             {
                 event.setCancelled(true);
                 plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
@@ -190,14 +180,15 @@ public class InventoryListener implements Listener
                         meta.setDisplayName(ChatColor.DARK_PURPLE + "" + ChatColor.ITALIC + "Mystery Item!");
                         fakeItem.setItemMeta(meta);
                         fakeItem.setType(Material.POTATO_ITEM);
+                        
                         craftingInventory.setResult(fakeItem);
-                        new BukkitRunnable() 
+                        new BukkitRunnable()
                         {
-                            public void run() 
+                            public void run()
                             {
-                            player.updateInventory();
+                                player.updateInventory();
                             }
-                            }.runTaskLater(plugin, 0);
+                        }.runTaskLater(plugin, 0);
                         player.updateInventory();
                         return;
                     }
@@ -221,13 +212,14 @@ public class InventoryListener implements Listener
                                 weapon.getParts().put(part.getPart(), 0);
                                 craftingInventory.setResult(weapon.previewItemStack());
                             }
-                        new BukkitRunnable() 
+                        new BukkitRunnable()
                         {
-                            public void run() 
+                            public void run()
                             {
-                            player.updateInventory();
+                                player.updateInventory();
+                               
                             }
-                            }.runTaskLater(plugin, 0);
+                        }.runTaskLater(plugin, 0);
                         player.updateInventory();
                         return;
                     }
@@ -241,13 +233,13 @@ public class InventoryListener implements Listener
                         StrangeWeapon weapon = new StrangeWeapon(strangeWeapon.clone());
                         weapon.setCustomName(plugin.tags.get(player.getName()));
                         craftingInventory.setResult(weapon.previewItemStack());
-                        new BukkitRunnable() 
+                        new BukkitRunnable()
                         {
-                            public void run() 
+                            public void run()
                             {
-                            player.updateInventory();
+                                player.updateInventory();
                             }
-                            }.runTaskLater(plugin, 0);
+                        }.runTaskLater(plugin, 0);
                         player.updateInventory();
                         return;
                     }
@@ -261,26 +253,26 @@ public class InventoryListener implements Listener
                         StrangeWeapon weapon = new StrangeWeapon(strangeWeapon.clone());
                         weapon.setDescription(plugin.tags.get(player.getName()));
                         craftingInventory.setResult(weapon.previewItemStack());
-                        new BukkitRunnable() 
+                        new BukkitRunnable()
                         {
-                            public void run() 
+                            public void run()
                             {
-                            player.updateInventory();
+                                player.updateInventory();
                             }
-                            }.runTaskLater(plugin, 0);
+                        }.runTaskLater(plugin, 0);
                         player.updateInventory();
                         return;
                     }
                     if (numNormalItems != numTotalItems)
                     {
                         craftingInventory.setResult(null);
-                        new BukkitRunnable() 
+                        new BukkitRunnable()
                         {
-                            public void run() 
+                            public void run()
                             {
-                            player.updateInventory();
+                                player.updateInventory();
                             }
-                            }.runTaskLater(plugin, 0);
+                        }.runTaskLater(plugin, 0);
                         player.updateInventory();
                         return;
                     }
@@ -363,11 +355,7 @@ public class InventoryListener implements Listener
                         loot = new StrangeWeapon(loot).clone();
                     }
                     /*
-                     * if (loot == null) { getLogger().severe(
-                     * "LOOT IS NULL - Report this to the plugin author!");
-                     * getLogger().severe("Player " + player.getName() +
-                     * " tried to uncrate a crate!" +
-                     * crate.serialize().toString()); }
+                     * if (loot == null) { getLogger().severe( "LOOT IS NULL - Report this to the plugin author!"); getLogger().severe("Player " + player.getName() + " tried to uncrate a crate!" + crate.serialize().toString()); }
                      */// http://pastie.org/private/borniaknvtofbio6mfza
                     String lootName;
                     if (loot.getItemMeta().hasDisplayName())
@@ -379,29 +367,56 @@ public class InventoryListener implements Listener
                         lootName = ChatColor.YELLOW + Util.toTitleCase(loot.getType().toString().toLowerCase().replaceAll("_", " "));
                     }
                     plugin.getServer().broadcastMessage(player.getDisplayName() + ChatColor.WHITE + " has unboxed: " + ChatColor.YELLOW + lootName);
-                    // event.setResult(Result.ALLOW); //Maybe this fixes it?
-                   // Dupe fix?
+                    // event.setResult(Result.ALLOW); 
+                    // Maybe this fixes it?
+                    // Dupe fix?
                     ItemStack[] beforeCraft = craftingInventory.getContents();
-                    for(int i =0; i < beforeCraft.length;i++)
+                    
+                    for (int i = 0; i < beforeCraft.length; i++)
                     {
-                        if(MetaParser.isKey(beforeCraft[i]))
+                        if (MetaParser.isKey(beforeCraft[i]))
                         {
-                            beforeCraft[i].setAmount(beforeCraft[i].getAmount()-1);
+                            if(beforeCraft[i].getAmount() > 0)
+                            {    
+                                beforeCraft[i].setAmount(beforeCraft[i].getAmount() - 1);
+                                if(beforeCraft[i].getAmount()<=0)
+                                {
+                                    beforeCraft[i].setType(Material.AIR);
+                                }
+                            }
+                            else
+                            {
+                                beforeCraft[i].setType(Material.AIR);
+                                player.kickPlayer("Glitch Abuser! You have been reported!");
+                            }
                         }
-                        else if(Crate.isCrate(beforeCraft[i]))
-                        {
-                            beforeCraft[i].setAmount(beforeCraft[i].getAmount()-1);
-                        }
+                        else
+                            if (Crate.isCrate(beforeCraft[i]))
+                            {
+                                if(beforeCraft[i].getAmount() > 0)
+                                {    
+                                    beforeCraft[i].setAmount(beforeCraft[i].getAmount() - 1);
+                                    if(beforeCraft[i].getAmount()<=0)
+                                    {
+                                        beforeCraft[i].setType(Material.AIR);
+                                    }
+                                }
+                                else
+                                {
+                                    beforeCraft[i].setType(Material.AIR);
+                                    player.kickPlayer("Glitch Abuser! You have been reported!");
+                                }
+                            }
                     }
                     event.getInventory().setContents(beforeCraft);
                     event.setCurrentItem(loot);
-                    new BukkitRunnable() 
+                    new BukkitRunnable()
                     {
-                        public void run() 
+                        public void run()
                         {
-                        player.updateInventory();
+                            player.updateInventory();
                         }
-                        }.runTaskLater(plugin, 0);
+                    }.runTaskLater(plugin, 0);
                 }
                 if (numStrangeWeapons == 1 && numStrangeParts == 1 && numTotalItems == 2)
                 {
@@ -410,13 +425,13 @@ public class InventoryListener implements Listener
                     weapon.getParts().put(part.getPart(), 0);
                     craftingInventory.clear();
                     event.setCurrentItem(weapon.getItemStack());
-                    new BukkitRunnable() 
+                    new BukkitRunnable()
                     {
-                        public void run() 
+                        public void run()
                         {
-                        player.updateInventory();
+                            player.updateInventory();
                         }
-                        }.runTaskLater(plugin, 0);
+                    }.runTaskLater(plugin, 0);
                 }
                 if (numStrangeWeapons == 1 && numNameTags == 1 && numTotalItems == 2)
                 {
@@ -429,13 +444,13 @@ public class InventoryListener implements Listener
                     weapon.setCustomName(plugin.tags.get(player.getName()));
                     craftingInventory.clear();
                     event.setCurrentItem(weapon.getItemStack());
-                    new BukkitRunnable() 
+                    new BukkitRunnable()
                     {
-                        public void run() 
+                        public void run()
                         {
-                        player.updateInventory();
+                            player.updateInventory();
                         }
-                        }.runTaskLater(plugin, 0);
+                    }.runTaskLater(plugin, 0);
                 }
                 if (numStrangeWeapons == 1 && numDescriptionTags == 1 && numTotalItems == 2)
                 {
@@ -448,13 +463,13 @@ public class InventoryListener implements Listener
                     weapon.setDescription(plugin.tags.get(player.getName()));
                     craftingInventory.clear();
                     event.setCurrentItem(weapon.getItemStack());
-                    new BukkitRunnable() 
+                    new BukkitRunnable()
                     {
-                        public void run() 
+                        public void run()
                         {
-                        player.updateInventory();
+                            player.updateInventory();
                         }
-                        }.runTaskLater(plugin, 0);
+                    }.runTaskLater(plugin, 0);
                 }
             }
     }

@@ -95,13 +95,11 @@ public class NewPartCommand implements CommandExecutor
 
         if (target.equals(sender))
         {
-            sender.sendMessage(ChatColor.GOLD + "Given " + ChatColor.AQUA + "you " + quantity + ChatColor.GOLD + " strange part(s) of type \"" + ChatColor.AQUA + chosenPart.getName() + ChatColor.GOLD
-                    + "\"");
+            sender.sendMessage(ChatColor.GOLD + "Given " + ChatColor.AQUA + "you " + quantity + ChatColor.GOLD + " strange part(s) of type \"" + ChatColor.AQUA + chosenPart.getName() + ChatColor.GOLD + "\"");
         }
         else
         {
-            sender.sendMessage(ChatColor.GOLD + "Given " + ChatColor.AQUA + target.getName() + " " + quantity + ChatColor.GOLD + " strange part(s) of type \"" + ChatColor.AQUA + chosenPart.getName()
-                    + ChatColor.GOLD + "\"");
+            sender.sendMessage(ChatColor.GOLD + "Given " + ChatColor.AQUA + target.getName() + " " + quantity + ChatColor.GOLD + " strange part(s) of type \"" + ChatColor.AQUA + chosenPart.getName() + ChatColor.GOLD + "\"");
         }
         return true;
     }

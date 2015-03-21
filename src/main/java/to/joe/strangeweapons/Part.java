@@ -1,6 +1,7 @@
 package to.joe.strangeweapons;
 
-public enum Part {
+public enum Part 
+{
     CREEPER("Creepers Killed", 1),
     SKELETON("Skeletons Killed", 1),
     SPIDER("Spiders Killed", 1),
@@ -39,16 +40,19 @@ public enum Part {
     private String name;
     private double multiplier;
 
-    private Part(String n, double m) {
+    private Part(String n, double m)
+    {
         name = n;
         multiplier = m;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public double getMultiplier() {
+    public double getMultiplier()
+    {
         return multiplier;
     }
 }
