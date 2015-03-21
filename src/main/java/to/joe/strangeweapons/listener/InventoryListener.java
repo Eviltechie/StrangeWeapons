@@ -1,7 +1,5 @@
 package to.joe.strangeweapons.listener;
 
-import java.util.Set;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
