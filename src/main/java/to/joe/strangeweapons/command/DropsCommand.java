@@ -11,61 +11,78 @@ import org.bukkit.inventory.ItemStack;
 import to.joe.strangeweapons.StrangeWeapons;
 import to.joe.strangeweapons.meta.StrangeWeapon;
 
-public class DropsCommand implements CommandExecutor {
+public class DropsCommand implements CommandExecutor
+{
 
     private StrangeWeapons plugin;
 
-    public DropsCommand(StrangeWeapons plugin) {
+    public DropsCommand(StrangeWeapons plugin)
+    {
         this.plugin = plugin;
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
+    {
+        if (!(sender instanceof Player))
+        {
             sender.sendMessage(ChatColor.RED + "Only players may use this command");
             return true;
         }
-        if (args.length == 1) {
-            if (args[0].equalsIgnoreCase("list")) {
-                if (!plugin.getConfig().contains("drops")) {
+        if (args.length == 1)
+        {
+            if (args[0].equalsIgnoreCase("list"))
+            {
+                if (!plugin.getConfig().contains("drops"))
+                {
                     sender.sendMessage(ChatColor.RED + "No drops exist yet");
                     return true;
                 }
                 sender.sendMessage(ChatColor.GOLD + "The following items can drop");
                 ConfigurationSection cs = plugin.getConfig().getConfigurationSection("drops");
-                for (String item : cs.getKeys(false)) {
+                for (String item : cs.getKeys(false))
+                {
                     ConfigurationSection i = cs.getConfigurationSection(item);
                     sender.sendMessage(ChatColor.AQUA + item + ChatColor.GOLD + " | " + ChatColor.AQUA + ChatColor.stripColor(i.getItemStack("item").serialize().toString()) + ChatColor.GOLD + " with weight " + ChatColor.AQUA + i.getDouble("weight"));
                 }
             }
             return true;
         }
-        if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("add")) {
+        if (args.length == 2)
+        {
+            if (args[0].equalsIgnoreCase("add"))
+            {
                 double weight = 1;
-                try {
+                try
+                {
                     weight = Double.parseDouble(args[1]);
-                } catch (NumberFormatException e) {
+                }
+                catch (NumberFormatException e)
+                {
                     sender.sendMessage(ChatColor.RED + "That's not a number");
                     return true;
                 }
-                if (weight <= 0) {
+                if (weight <= 0)
+                {
                     sender.sendMessage(ChatColor.RED + "Weight must be greater than zero");
                     return true;
                 }
                 ConfigurationSection cs = plugin.getConfig().getConfigurationSection("drops");
                 int maxItem = 0;
-                if (plugin.getConfig().contains("drops")) {
-                    for (String c : cs.getKeys(false)) {
+                if (plugin.getConfig().contains("drops"))
+                {
+                    for (String c : cs.getKeys(false))
+                    {
                         int crate = Integer.parseInt(c);
-                        if (crate > maxItem) {
+                        if (crate > maxItem)
+                        {
                             maxItem = crate;
                         }
                     }
                 }
                 maxItem++;
                 ItemStack item = ((Player) sender).getItemInHand().clone();
-                if (StrangeWeapon.isStrangeWeapon(item)) {
+                if (StrangeWeapon.isStrangeWeapon(item))
+                {
                     item = new StrangeWeapon(item).clone();
                 }
                 plugin.getConfig().set("drops." + maxItem + ".item", item);
@@ -74,11 +91,15 @@ public class DropsCommand implements CommandExecutor {
                 plugin.saveConfig();
                 return true;
             }
-            if (args[0].equalsIgnoreCase("remove")) {
+            if (args[0].equalsIgnoreCase("remove"))
+            {
                 int item = 1;
-                try {
+                try
+                {
                     item = Integer.parseInt(args[1]);
-                } catch (NumberFormatException e) {
+                }
+                catch (NumberFormatException e)
+                {
                     sender.sendMessage(ChatColor.RED + "That's not a number");
                     return true;
                 }

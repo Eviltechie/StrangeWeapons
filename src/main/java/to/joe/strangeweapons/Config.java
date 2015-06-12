@@ -5,7 +5,8 @@ import java.util.Map;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-public class Config {
+public class Config
+{
 
     public final Map<Integer, String> weaponText = new HashMap<Integer, String>();
 
@@ -25,14 +26,17 @@ public class Config {
     public final int crateDropRollMaxTime;
     public final int crateDropRollMinTime;
 
-    public Config(FileConfiguration config) {
-        for (String level : config.getConfigurationSection("levels").getKeys(false)) {
+    public Config(FileConfiguration config)
+    {
+        for (String level : config.getConfigurationSection("levels").getKeys(false))
+        {
             weaponText.put(Integer.parseInt(level), config.getString("levels." + level));
         }
 
         tagLengthLimit = config.getInt("taglengthlimit", 50);
         int mParts = config.getInt("maxparts", 3);
-        if (mParts != 0) {
+        if (mParts != 0)
+        {
             mParts++;
         }
         maxParts = mParts;

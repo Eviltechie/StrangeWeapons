@@ -2,7 +2,8 @@ package to.joe.strangeweapons;
 
 import org.bukkit.ChatColor;
 
-public enum Quality {
+public enum Quality 
+{
 
     NORMAL(ChatColor.RESET + ""),
     UNIQUE(ChatColor.YELLOW + ""),
@@ -17,11 +18,13 @@ public enum Quality {
 
     private String prefix;
 
-    private Quality(String prefix) {
+    private Quality(String prefix)
+    {
         this.prefix = prefix;
     }
 
-    public String getPrefix() {
+    public String getPrefix()
+    {
         return prefix;
     }
 

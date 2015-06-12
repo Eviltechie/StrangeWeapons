@@ -11,22 +11,27 @@ import to.joe.strangeweapons.StrangeWeapons;
 import to.joe.strangeweapons.datastorage.DataStorageException;
 import to.joe.strangeweapons.datastorage.PlayerDropData;
 
-public class PlaytimeCommand implements CommandExecutor {
+public class PlaytimeCommand implements CommandExecutor
+{
 
     private StrangeWeapons plugin;
 
-    public PlaytimeCommand(StrangeWeapons plugin) {
+    public PlaytimeCommand(StrangeWeapons plugin)
+    {
         this.plugin = plugin;
     }
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length < 1) {
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
+    {
+        if (args.length < 1)
+        {
             sender.sendMessage(ChatColor.RED + "Usage: /playtime <name>");
             return true;
         }
-        try {
-            if (plugin.getDSI().playerDropDataExists(args[0])) {
+        try
+        {
+            if (plugin.getDSI().playerDropDataExists(args[0]))
+            {
                 PlayerDropData data = plugin.getDSI().getPlayerDropData(args[0]);
                 int seconds = data.getPlayTime();
                 int years = seconds / 31536000;
@@ -42,32 +47,43 @@ public class PlaytimeCommand implements CommandExecutor {
                 int minutes = seconds / 60;
                 seconds = seconds % 60;
                 StringBuilder timeString = new StringBuilder(ChatColor.GOLD + data.getPlayer() + ChatColor.YELLOW + " has played for " + ChatColor.AQUA);
-                if (years != 0) {
+                if (years != 0)
+                {
                     timeString.append(years + " years ");
                 }
-                if (months != 0) {
+                if (months != 0)
+                {
                     timeString.append(months + " months");
                 }
-                if (weeks != 0) {
+                if (weeks != 0)
+                {
                     timeString.append(weeks + " weeks ");
                 }
-                if (days != 0) {
+                if (days != 0)
+                {
                     timeString.append(days + " days ");
                 }
-                if (hours != 0) {
+                if (hours != 0)
+                {
                     timeString.append(hours + " hours ");
                 }
-                if (minutes != 0) {
+                if (minutes != 0)
+                {
                     timeString.append(minutes + " minutes ");
                 }
-                if (seconds != 0) {
+                if (seconds != 0)
+                {
                     timeString.append(seconds + " seconds ");
                 }
                 sender.sendMessage(timeString.toString());
-            } else {
+            }
+            else
+            {
                 sender.sendMessage(ChatColor.RED + "I haven't seen " + args[0]);
             }
-        } catch (DataStorageException e) {
+        }
+        catch (DataStorageException e)
+        {
             plugin.getLogger().log(Level.SEVERE, "Error reading playtime for player " + args[0], e);
             sender.sendMessage(ChatColor.RED + "Something went wrong!");
         }

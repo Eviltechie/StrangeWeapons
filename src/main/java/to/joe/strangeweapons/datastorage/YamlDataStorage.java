@@ -16,7 +16,8 @@ import org.bukkit.inventory.ItemStack;
 import to.joe.strangeweapons.Part;
 import to.joe.strangeweapons.StrangeWeapons;
 
-public class YamlDataStorage implements DataStorageInterface {
+public class YamlDataStorage implements DataStorageInterface
+{
 
     private StrangeWeapons plugin;
     private File weaponConfigFile;
@@ -25,88 +26,112 @@ public class YamlDataStorage implements DataStorageInterface {
     private File dropsConfigFile;
     private YamlConfiguration dropsConfig;
 
-    public YamlDataStorage(final StrangeWeapons plugin) throws IOException {
+    public YamlDataStorage(final StrangeWeapons plugin) throws IOException
+    {
         this.plugin = plugin;
 
         this.weaponConfigFile = new File(plugin.getDataFolder(), "weapons.yml");
-        if (!(weaponConfigFile.exists() && !weaponConfigFile.isDirectory())) {
+        if (!(weaponConfigFile.exists() && !weaponConfigFile.isDirectory()))
+        {
             weaponConfigFile.createNewFile();
         }
         this.weaponConfig = YamlConfiguration.loadConfiguration(weaponConfigFile);
-        if (!weaponConfig.isConfigurationSection("weapons")) {
+        if (!weaponConfig.isConfigurationSection("weapons"))
+        {
             weaponConfig.createSection("weapons");
         }
 
         lastWeaponId = 0;
         Set<String> keys = this.weaponConfig.getConfigurationSection("weapons").getKeys(false);
-        for (String key : keys) {
-            try {
+        for (String key : keys)
+        {
+            try
+            {
                 int value = Integer.valueOf(key);
-                if (value < 0) {
+                if (value < 0)
+                {
                     this.plugin.getLogger().warning("Picked up an invalid id at weapons." + key);
                 }
-                if (value > lastWeaponId) {
+                if (value > lastWeaponId)
+                {
                     this.lastWeaponId = value;
                 }
-            } catch (NumberFormatException e) {
+            }
+            catch (NumberFormatException e)
+            {
                 this.plugin.getLogger().warning("Picked up an invalid id at weapons." + key);
             }
         }
 
         this.dropsConfigFile = new File(plugin.getDataFolder(), "drops.yml");
-        if (!(dropsConfigFile.exists() && !dropsConfigFile.isDirectory())) {
+        if (!(dropsConfigFile.exists() && !dropsConfigFile.isDirectory()))
+        {
             dropsConfigFile.createNewFile();
         }
         this.dropsConfig = YamlConfiguration.loadConfiguration(dropsConfigFile);
-        if (!dropsConfig.isConfigurationSection("players")) {
+        if (!dropsConfig.isConfigurationSection("players"))
+        {
             dropsConfig.createSection("players");
         }
 
-        plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-            @Override
-            public void run() {
-                try {
+        plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
+        {
+            public void run()
+            {
+                try
+                {
                     weaponConfig.save(weaponConfigFile);
                     dropsConfig.save(dropsConfigFile);
-                } catch (IOException e) {
+                }
+                catch (IOException e)
+                {
                     plugin.getServer().getLogger().log(Level.SEVERE, "Error writing file!", e);
                 }
             }
         }, 1200, 1200);
     }
 
-    public void shutdown() {
-        try {
+    public void shutdown()
+    {
+        try
+        {
             weaponConfig.save(weaponConfigFile);
             dropsConfig.save(dropsConfigFile);
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             plugin.getServer().getLogger().log(Level.SEVERE, "Error writing file on shutdown!", e);
         }
     }
 
-    @Override
-    public WeaponData getWeaponData(int id) throws DataStorageException {
-        if (this.weaponConfig.getConfigurationSection("weapons").getConfigurationSection(Integer.toString(id)) == null) {
+    public WeaponData getWeaponData(int id) throws DataStorageException
+    {
+        if (this.weaponConfig.getConfigurationSection("weapons").getConfigurationSection(Integer.toString(id)) == null)
+        {
             throw new DataStorageException("Tried to read a weapon whose id didn't exist!");
         }
         return WeaponData.fromConfigurationSection(id, this.weaponConfig.getConfigurationSection("weapons").getConfigurationSection(Integer.toString(id)));
     }
 
-    @Override
-    public WeaponData saveNewWeaponData(WeaponData data) throws DataStorageException {
+    public WeaponData saveNewWeaponData(WeaponData data) throws DataStorageException
+    {
         int newId = lastWeaponId + 1;
         this.weaponConfig.getConfigurationSection("weapons").createSection(Integer.toString(newId));
         ConfigurationSection section = this.weaponConfig.getConfigurationSection("weapons").getConfigurationSection(Integer.toString(newId));
         section.set("quality", data.getQuality().toString());
-        if (data.getCustomName() != null) {
+        if (data.getCustomName() != null)
+        {
             section.set("customname", data.getCustomName());
         }
-        if (data.getDescription() != null) {
+        if (data.getDescription() != null)
+        {
             section.set("description", data.getDescription());
         }
         List<String> rawParts = new ArrayList<String>();
-        if (data.getParts() != null) {
-            for (Entry<Part, Integer> part : data.getParts().entrySet()) {
+        if (data.getParts() != null)
+        {
+            for (Entry<Part, Integer> part : data.getParts().entrySet())
+            {
                 rawParts.add(part.getKey() + "," + part.getValue());
             }
         }
@@ -116,38 +141,46 @@ public class YamlDataStorage implements DataStorageInterface {
         return data;
     }
 
-    @Override
-    public void updateWeaponData(WeaponData data) throws DataStorageException {
-        if (this.weaponConfig.getConfigurationSection("weapons").getConfigurationSection(Integer.toString(data.getWeaponId())) == null) {
+    public void updateWeaponData(WeaponData data) throws DataStorageException
+    {
+        if (this.weaponConfig.getConfigurationSection("weapons").getConfigurationSection(Integer.toString(data.getWeaponId())) == null)
+        {
             throw new DataStorageException("Tried to update a weapon whose id didn't exist!");
         }
         ConfigurationSection section = this.weaponConfig.getConfigurationSection("weapons").getConfigurationSection(Integer.toString(data.getWeaponId()));
         section.set("quality", data.getQuality().toString());
-        if (data.getCustomName() != null) {
+        if (data.getCustomName() != null)
+        {
             section.set("customname", data.getCustomName());
         }
-        if (data.getDescription() != null) {
+        if (data.getDescription() != null)
+        {
             section.set("description", data.getDescription());
         }
         List<String> rawParts = new ArrayList<String>();
-        if (data.getParts() != null) {
-            for (Entry<Part, Integer> part : data.getParts().entrySet()) {
+        if (data.getParts() != null)
+        {
+            for (Entry<Part, Integer> part : data.getParts().entrySet())
+            {
                 rawParts.add(part.getKey() + "," + part.getValue());
             }
         }
         section.set("parts", rawParts);
     }
 
-    @Override
-    public PlayerDropData getPlayerDropData(String player) throws DataStorageException {
+    public PlayerDropData getPlayerDropData(String player) throws DataStorageException
+    {
         Set<String> keys = this.dropsConfig.getConfigurationSection("players").getKeys(false);
-        for (String key : keys) {
-            if (key.equalsIgnoreCase(player)) {
+        for (String key : keys)
+        {
+            if (key.equalsIgnoreCase(player))
+            {
                 player = key;
                 break;
             }
         }
-        if (this.dropsConfig.getConfigurationSection("players").getConfigurationSection(player) == null) {
+        if (this.dropsConfig.getConfigurationSection("players").getConfigurationSection(player) == null)
+        {
             this.dropsConfig.getConfigurationSection("players").createSection(player);
             ConfigurationSection section = this.dropsConfig.getConfigurationSection("players").getConfigurationSection(player);
             PlayerDropData data = new PlayerDropData(player, 0, 0, 0);
@@ -155,17 +188,21 @@ public class YamlDataStorage implements DataStorageInterface {
             section.set("nextitemdrop", data.getNextCrateDrop());
             section.set("nextcratedrop", data.getNextCrateDrop());
             return data;
-        } else {
+        }
+        else
+        {
             ConfigurationSection section = this.dropsConfig.getConfigurationSection("players").getConfigurationSection(player);
             return new PlayerDropData(player, section.getInt("playtime"), section.getInt("nextitemdrop"), section.getInt("nextcratedrop"));
         }
     }
 
-    @Override
-    public boolean playerDropDataExists(String player) throws DataStorageException {
+    public boolean playerDropDataExists(String player) throws DataStorageException
+    {
         Set<String> keys = this.dropsConfig.getConfigurationSection("players").getKeys(false);
-        for (String key : keys) {
-            if (key.equalsIgnoreCase(player)) {
+        for (String key : keys)
+        {
+            if (key.equalsIgnoreCase(player))
+            {
                 player = key;
                 break;
             }
@@ -173,9 +210,10 @@ public class YamlDataStorage implements DataStorageInterface {
         return this.dropsConfig.getConfigurationSection("players").getConfigurationSection(player) != null;
     }
 
-    @Override
-    public void updatePlayerDropData(PlayerDropData data) throws DataStorageException {
-        if (this.dropsConfig.getConfigurationSection("players").getConfigurationSection(data.getPlayer()) == null) {
+    public void updatePlayerDropData(PlayerDropData data) throws DataStorageException
+    {
+        if (this.dropsConfig.getConfigurationSection("players").getConfigurationSection(data.getPlayer()) == null)
+        {
             throw new DataStorageException("Tried to update a player who didn't exist!");
         }
         ConfigurationSection section = this.dropsConfig.getConfigurationSection("players").getConfigurationSection(data.getPlayer());
@@ -184,68 +222,88 @@ public class YamlDataStorage implements DataStorageInterface {
         section.set("nextcratedrop", data.getNextCrateDrop());
     }
 
-    @Override
-    public boolean itemCanDrop(PlayerDropData data) throws DataStorageException {
+    public boolean itemCanDrop(PlayerDropData data) throws DataStorageException
+    {
         ConfigurationSection section = this.dropsConfig.getConfigurationSection("players").getConfigurationSection(data.getPlayer()).getConfigurationSection("drops");
-        if (section == null) {
+        if (section == null)
+        {
             return true;
-        } else {
+        }
+        else
+        {
             int numDrops = 0;
             Set<String> keys = section.getKeys(false);
-            for (String key : keys) {
-                if (!section.getConfigurationSection(key).getBoolean("iscrate") && section.getConfigurationSection(key).getLong("time") > (new Date().getTime() / 1000) - (plugin.config.itemDropReset * 120)) {
+            for (String key : keys)
+            {
+                if (!section.getConfigurationSection(key).getBoolean("iscrate") && section.getConfigurationSection(key).getLong("time") > (new Date().getTime() / 1000) - (plugin.config.itemDropReset * 120))
+                {
                     numDrops++;
                 }
             }
-            if (numDrops < plugin.config.itemDropLimit) {
+            if (numDrops < plugin.config.itemDropLimit)
+            {
                 return true;
             }
             return false;
         }
     }
 
-    @Override
-    public boolean crateCanDrop(PlayerDropData data) throws DataStorageException {
+    public boolean crateCanDrop(PlayerDropData data) throws DataStorageException
+    {
         ConfigurationSection section = this.dropsConfig.getConfigurationSection("players").getConfigurationSection(data.getPlayer()).getConfigurationSection("drops");
-        if (section == null) {
+        if (section == null)
+        {
             return true;
-        } else {
+        }
+        else
+        {
             int numDrops = 0;
             Set<String> keys = section.getKeys(false);
-            for (String key : keys) {
-                if (section.getConfigurationSection(key).getBoolean("iscrate") && section.getConfigurationSection(key).getLong("time") > (new Date().getTime() / 1000) - (plugin.config.crateDropReset * 120)) {
+            for (String key : keys)
+            {
+                if (section.getConfigurationSection(key).getBoolean("iscrate") && section.getConfigurationSection(key).getLong("time") > (new Date().getTime() / 1000) - (plugin.config.crateDropReset * 120))
+                {
                     numDrops++;
                 }
             }
-            if (numDrops < plugin.config.crateDropLimit) {
+            if (numDrops < plugin.config.crateDropLimit)
+            {
                 return true;
             }
             return false;
         }
     }
 
-    @Override
-    public void recordDrop(String player, ItemStack item, boolean isCrate) throws DataStorageException {
-        if (this.dropsConfig.getConfigurationSection("players").getConfigurationSection(player) == null) {
+    public void recordDrop(String player, ItemStack item, boolean isCrate) throws DataStorageException
+    {
+        if (this.dropsConfig.getConfigurationSection("players").getConfigurationSection(player) == null)
+        {
             throw new DataStorageException("Tried to record a drop for a player who didn't exist!");
         }
         ConfigurationSection section = this.dropsConfig.getConfigurationSection("players").getConfigurationSection(player);
-        if (section.getConfigurationSection("drops") == null) {
+        if (section.getConfigurationSection("drops") == null)
+        {
             section.createSection("drops");
         }
         section = section.getConfigurationSection("drops");
         int lastDropId = 0;
         Set<String> keys = section.getKeys(false);
-        for (String key : keys) {
-            try {
+        for (String key : keys)
+        {
+            try
+            {
                 int value = Integer.valueOf(key);
-                if (value < 0) {
+                if (value < 0)
+                {
                     this.plugin.getLogger().warning("Picked up an invalid id at players." + player + ".drops." + key);
                 }
-                if (value > lastDropId) {
+                if (value > lastDropId)
+                {
                     lastDropId = value;
                 }
-            } catch (NumberFormatException e) {
+            }
+            catch (NumberFormatException e)
+            {
                 this.plugin.getLogger().warning("Picked up an invalid id at players." + player + ".drops." + key);
             }
         }
